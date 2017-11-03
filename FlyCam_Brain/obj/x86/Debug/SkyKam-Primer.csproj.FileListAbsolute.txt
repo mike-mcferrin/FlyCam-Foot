@@ -7,3 +7,17 @@ C:\MIKES\PROGRAMMING\PERSONAL\SkyKam\ArduinoController\obj\x86\Debug\6-ArduinoCo
 C:\MIKES\PROGRAMMING\PERSONAL\SkyKam\ArduinoController\bin\Debug\6-ArduinoController.exe
 C:\MIKES\PROGRAMMING\PERSONAL\SkyKam\ArduinoController\bin\Debug\6-ArduinoController.pdb
 C:\MIKES\PROGRAMMING\PERSONAL\SkyKam\ArduinoController\bin\Debug\CommandMessenger.dll
+C:\Users\smcferrin\Documents\Arduino\my sketches\WIreless_Test_Receiver_REPOSITORY\FlyCam_Brain\obj\x86\Debug\SkyKam-Primer.csprojResolveAssemblyReference.cache
+C:\Users\smcferrin\Documents\Arduino\my sketches\WIreless_Test_Receiver_REPOSITORY\FlyCam_Brain\obj\x86\Debug\ArduinoController.ControllerForm.resources
+C:\Users\smcferrin\Documents\Arduino\my sketches\WIreless_Test_Receiver_REPOSITORY\FlyCam_Brain\obj\x86\Debug\_6_ArduinoController.Properties.Resources.resources
+C:\Users\smcferrin\Documents\Arduino\my sketches\WIreless_Test_Receiver_REPOSITORY\FlyCam_Brain\obj\x86\Debug\SkyKam-Primer.csproj.GenerateResource.Cache
+C:\Users\smcferrin\Documents\Arduino\my sketches\WIreless_Test_Receiver_REPOSITORY\FlyCam_Brain\obj\x86\Debug\6-ArduinoController.exe
+C:\Users\smcferrin\Documents\Arduino\my sketches\WIreless_Test_Receiver_REPOSITORY\FlyCam_Brain\obj\x86\Debug\6-ArduinoController.pdb
+C:\Users\smcferrin\Documents\Arduino\my sketches\WIreless_Test_Receiver_REPOSITORY\FlyCam_Brain\obj\x86\Debug\FootSelectionList.g.cs
+C:\Users\smcferrin\Documents\Arduino\my sketches\WIreless_Test_Receiver_REPOSITORY\FlyCam_Brain\obj\x86\Debug\6-ArduinoController_MarkupCompile.cache
+C:\Users\smcferrin\Documents\Arduino\my sketches\WIreless_Test_Receiver_REPOSITORY\FlyCam_Brain\obj\x86\Debug\6-ArduinoController_MarkupCompile.lref
+C:\Users\smcferrin\Documents\Arduino\my sketches\WIreless_Test_Receiver_REPOSITORY\FlyCam_Brain\bin\Debug\6-ArduinoController.exe
+C:\Users\smcferrin\Documents\Arduino\my sketches\WIreless_Test_Receiver_REPOSITORY\FlyCam_Brain\bin\Debug\6-ArduinoController.pdb
+C:\Users\smcferrin\Documents\Arduino\my sketches\WIreless_Test_Receiver_REPOSITORY\FlyCam_Brain\bin\Debug\CommandMessenger.dll
+C:\Users\smcferrin\Documents\Arduino\my sketches\WIreless_Test_Receiver_REPOSITORY\FlyCam_Brain\obj\x86\Debug\FootSelectionList.baml
+C:\Users\smcferrin\Documents\Arduino\my sketches\WIreless_Test_Receiver_REPOSITORY\FlyCam_Brain\obj\x86\Debug\6-ArduinoController.g.resources

@@ -31,6 +31,10 @@ namespace ArduinoController
         private SerialTransport   _serialTransport;
         private CmdMessenger      _cmdMessenger;
         private ControllerForm    _controllerForm;
+
+        public delegate void CallOutHandler(ArduinoController a, float b, float c, EventArgs e);
+        public event CallOutHandler CallOut;
+
         public void Setup(ControllerForm controllerForm)
         {
             _controllerForm = controllerForm;
@@ -97,16 +101,22 @@ namespace ArduinoController
         void OnSerialReceivedFrequency(ReceivedCommand arguments)
         {
             var arg1 = arguments.ReadFloatArg();
-            Console.WriteLine($"X: {arg1}");
+            var arg2 = arguments.ReadFloatArg();
+            //Console.WriteLine($">> {arg1} {arg2}");
+
+            EventArgs e = null;
+            CallOut(this, arg1, arg2, e);
+
         }
 
-        
+
 
         void OnSerialReceived_ControllerLeftAnalogY(ReceivedCommand arguments)
         {
             var arg1 = arguments.ReadFloatArg();
-            var arg2 = 1; //arguments.ReadFloatArg();
-            Console.WriteLine($"Y: {arg1} {arg2}");
+            var arg2 = arguments.ReadFloatArg();
+            //Console.WriteLine($">> {arg1} {arg2}");
+
         }
 
 
@@ -117,13 +127,13 @@ namespace ArduinoController
         // Log received line to console
         private void NewLineReceived(object sender, NewLineEvent.NewLineArgs e)
         {
-            Console.WriteLine(@"Received > " + e.Command.CommandString());
+            //Console.WriteLine(@"Received > " + e.Command.CommandString());
         }
 
         // Log sent line to console
         private void NewLineSent(object sender, NewLineEvent.NewLineArgs e)
         {
-            Console.WriteLine(@"Sent > " + e.Command.CommandString());
+            //Console.WriteLine(@"Sent > " + e.Command.CommandString());
         }
 
         #endregion

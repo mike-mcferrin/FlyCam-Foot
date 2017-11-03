@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using _6_ArduinoController;
 
 namespace ArduinoController
 {
@@ -20,6 +21,14 @@ namespace ArduinoController
             InitializeComponent();
             _arduinoController = new ArduinoController();
             _arduinoController.Setup(this);
+            _arduinoController.CallOut += _arduinoController_CallOut;
+            WPFControl1.Child = list;
+        }
+        FootSelectionList list = new FootSelectionList();
+        private void _arduinoController_CallOut(ArduinoController a, float b, float c, EventArgs e)
+        {
+           
+            list.SetXY(b,c);
         }
 
         // Update arduinoController on value checkbox checked/unchecked
@@ -67,5 +76,12 @@ namespace ArduinoController
             }
             base.Dispose(disposing);
         }
+
+        private void elementHost1_ChildChanged(object sender, System.Windows.Forms.Integration.ChildChangedEventArgs e)
+        {
+           
+        }
+
+
     }
 }

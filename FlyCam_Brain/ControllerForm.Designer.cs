@@ -28,6 +28,7 @@
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.WPFControl1 = new System.Windows.Forms.Integration.ElementHost();
             this.SuspendLayout();
             // 
             // LedFrequencyLabel
@@ -56,7 +57,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(986, 102);
+            this.label2.Location = new System.Drawing.Point(1100, 102);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(77, 40);
@@ -105,7 +106,7 @@
             this.listView2.FullRowSelect = true;
             this.listView2.GridLines = true;
             this.listView2.HideSelection = false;
-            this.listView2.Location = new System.Drawing.Point(1021, 162);
+            this.listView2.Location = new System.Drawing.Point(1135, 162);
             this.listView2.MultiSelect = false;
             this.listView2.Name = "listView2";
             this.listView2.Size = new System.Drawing.Size(426, 305);
@@ -129,11 +130,22 @@
             this.columnHeader6.Text = "Details";
             this.columnHeader6.Width = 390;
             // 
+            // WPFControl1
+            // 
+            this.WPFControl1.Location = new System.Drawing.Point(-7, 121);
+            this.WPFControl1.Name = "WPFControl1";
+            this.WPFControl1.Size = new System.Drawing.Size(3312, 1346);
+            this.WPFControl1.TabIndex = 10;
+            this.WPFControl1.Text = "elementHost1";
+            this.WPFControl1.ChildChanged += new System.EventHandler<System.Windows.Forms.Integration.ChildChangedEventArgs>(this.elementHost1_ChildChanged);
+            this.WPFControl1.Child = null;
+            // 
             // ControllerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1640, 837);
+            this.Controls.Add(this.WPFControl1);
             this.Controls.Add(this.listView2);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.label2);
@@ -159,6 +171,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader4;
         private System.Windows.Forms.ColumnHeader columnHeader5;
         private System.Windows.Forms.ColumnHeader columnHeader6;
+        private System.Windows.Forms.Integration.ElementHost WPFControl1;
     }
 }
 
