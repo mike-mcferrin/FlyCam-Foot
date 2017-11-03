@@ -1,0 +1,9 @@
+C:\MIKES\PROGRAMMING\PERSONAL\SkyKam\ArduinoController\obj\x86\Debug\SkyKam-Primer.csprojResolveAssemblyReference.cache
+C:\MIKES\PROGRAMMING\PERSONAL\SkyKam\ArduinoController\obj\x86\Debug\ArduinoController.ControllerForm.resources
+C:\MIKES\PROGRAMMING\PERSONAL\SkyKam\ArduinoController\obj\x86\Debug\_6_ArduinoController.Properties.Resources.resources
+C:\MIKES\PROGRAMMING\PERSONAL\SkyKam\ArduinoController\obj\x86\Debug\SkyKam-Primer.csproj.GenerateResource.Cache
+C:\MIKES\PROGRAMMING\PERSONAL\SkyKam\ArduinoController\obj\x86\Debug\6-ArduinoController.exe
+C:\MIKES\PROGRAMMING\PERSONAL\SkyKam\ArduinoController\obj\x86\Debug\6-ArduinoController.pdb
+C:\MIKES\PROGRAMMING\PERSONAL\SkyKam\ArduinoController\bin\Debug\6-ArduinoController.exe
+C:\MIKES\PROGRAMMING\PERSONAL\SkyKam\ArduinoController\bin\Debug\6-ArduinoController.pdb
+C:\MIKES\PROGRAMMING\PERSONAL\SkyKam\ArduinoController\bin\Debug\CommandMessenger.dll

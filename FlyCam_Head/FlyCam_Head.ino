@@ -57,7 +57,7 @@ int txNum = 0;
 
 unsigned long currentMillis;
 unsigned long prevMillis;
-unsigned long txIntervalMillis = 50; // send once per second
+unsigned long txIntervalMillis = 30; // send once per second
 
 CmdMessenger cmdMessenger = CmdMessenger(Serial);
 enum
@@ -65,8 +65,8 @@ enum
   kAcknowledge,
   kError,
   kSetLed, 
-  ControllerLeftAnalogX,
-  ControllerLeftAnalogY
+  ControllerLeftAnalog,
+  ControllerRightAnalog
 };
 
 //#define OLED_RESET 4
@@ -112,6 +112,10 @@ void DisplayInit()
 
 bool stateLX = false;
 bool stateLY = false;
+bool stateRX = false;
+bool stateRY = false;
+bool stateDpadU = false;
+bool stateDpadD = false;
 
 void ReadPlaystationController()
 {
@@ -120,38 +124,70 @@ void ReadPlaystationController()
   bool DpadD = ps2x.Button(PSB_PAD_DOWN);
   bool DpadL = ps2x.Button(PSB_PAD_LEFT);
   bool DpadR = ps2x.Button(PSB_PAD_RIGHT);
-  int LX = ps2x.Analog(PSS_LX) - 128;
-      if ( abs(LX) > ANALOG_MOVEMENT_TOLERANCE )
+  
+      int LX = ps2x.Analog(PSS_LX) - 128;
+      if ( abs(LX) > ANALOG_MOVEMENT_TOLERANCE && ( stateLX || ( (!stateLX && LX < 127) && (!stateLX && LX > -127) ) ) )
       { 
         stateLX = true;
-        cmdMessenger.sendCmd(ControllerLeftAnalogX, float( LX ));
+        SendControlCommand(1,LX);
       }
       else
       {
         if ( stateLX )
         {
-          cmdMessenger.sendCmd(ControllerLeftAnalogX, float( 0 ));
+          SendControlCommand(1,0);
           stateLX = false;
         }
       }
 
       
       int LY = -1 * ( ps2x.Analog(PSS_LY) - 128 );
-      if ( abs(LY) > ANALOG_MOVEMENT_TOLERANCE )
+      if ( abs(LY) > ANALOG_MOVEMENT_TOLERANCE && ( stateLY || ( (!stateLY && LY < 127) && (!stateLY && LY > -127) ) ) )
       {
         stateLY = true;
-        cmdMessenger.sendCmd(ControllerLeftAnalogY,  float( LY ));
+        SendControlCommand(2,LY);
       }
        else
       {
         if ( stateLY )
         {
-          cmdMessenger.sendCmd(ControllerLeftAnalogY, float( 0 ));
-          stateLY = false;
+        SendControlCommand(2,0);
+        stateLY = false;
         }
       }
-  int RX = ps2x.Analog(PSS_RX) - 128;
-  int RY = ( ps2x.Analog(PSS_RY) - 128 ) * -1;
+
+      int RX = ps2x.Analog(PSS_RX) - 128;
+      if ( abs(RX) > ANALOG_MOVEMENT_TOLERANCE  && ( stateRX || ( (!stateRX && RX < 127) && (!stateRX && RX > -127) ) ) )
+      { 
+        stateRX = true;
+        SendControlCommand(3,RX);
+      }
+      else
+      {
+        if ( stateRX )
+        {
+          SendControlCommand(3,0);
+          stateRX = false;
+        }
+      }
+
+      
+      int RY = -1 * ( ps2x.Analog(PSS_RY) - 128 );
+      if ( abs(RY) > ANALOG_MOVEMENT_TOLERANCE && ( stateRY || ( (!stateRY && RY < 127) && (!stateRY && RY > -127) ) ) )
+      {
+        stateRY = true;
+        SendControlCommand(4,RY);
+      }
+       else
+      {
+        if ( stateRY )
+        {
+        SendControlCommand(4,0);
+        stateRY = false;
+        }
+      }
+
+
   bool ButtonX = ps2x.NewButtonState(PSB_CROSS);
   bool ButtonO = ps2x.NewButtonState(PSB_CIRCLE);
   bool ButtonS = ps2x.NewButtonState(PSB_SQUARE);
@@ -164,20 +200,43 @@ void ReadPlaystationController()
 
   if ( DpadU )
     {   
+      if ( !stateDpadU )
+      {
+        SendControlCommand(6,1);
+        stateDpadU = true;
+      }
  //     Serial.println("In");
       dataToSend[0] = 1;
       dataToSend[1] = 2;
       dataToSend[2] = LX;
        send(); 
     }
+    else
+    {
+      if ( stateDpadU )
+      {
+          stateDpadU  = false;
+      }
+    }
   if ( DpadD )
   {   
+     if ( !stateDpadD )
+      {
+        SendControlCommand(6,-1);
+        stateDpadD = true;
+      }
   //  Serial.println("Out");
     dataToSend[0] = 1;
     dataToSend[1] = 1;
     dataToSend[2] = LX;
     send();    
-  }
+  } else
+    {
+      if ( stateDpadD )
+      {
+          stateDpadD  = false;
+      }
+    }
 
   
   if ( ButtonL2 )
@@ -192,13 +251,22 @@ void ReadPlaystationController()
 
 }
 
+void SendControlCommand(float bank, float value)
+{
+        cmdMessenger.sendCmdStart(ControllerLeftAnalog);
+        cmdMessenger.sendCmdArg(bank);
+        cmdMessenger.sendCmdArg(float( value ));
+        cmdMessenger.sendCmdEnd(); 
+}
+
+
 void BrainInit()
 {
    Serial.begin(115200); 
  
   //cmdMessenger.printLfCr();               // Adds newline to every command
     cmdMessenger.attach(  kSetLed,          OnRecievedSerial_Led);
-    cmdMessenger.attach(  ControllerLeftAnalogX, OnRecievedSerial_Frequency);
+    cmdMessenger.attach(  ControllerLeftAnalog, OnRecievedSerial_Frequency);
     cmdMessenger.sendCmd( kAcknowledge,     "Started");
 }
   
