@@ -1,3 +1,4 @@
+
 /*
  *  This sends a string and an incrementing number out on radio
  * 
@@ -10,12 +11,15 @@
 #include <nRF24L01.h>
 #include <RF24.h>
 #include <PS2X_lib.h> 
+#include <CmdMessenger.h>
+//#include <Adafruit_GFX.h>
+//#include <Adafruit_SSD1306.h>
+    
 
-
+#define ANALOG_MOVEMENT_TOLERANCE 4
 
 #define CE_PIN   9
 #define CSN_PIN 10
-
 
 #define PS2_SEL        2  //16
 #define PS2_CMD        3  //15
@@ -55,12 +59,24 @@ unsigned long currentMillis;
 unsigned long prevMillis;
 unsigned long txIntervalMillis = 50; // send once per second
 
+CmdMessenger cmdMessenger = CmdMessenger(Serial);
+enum
+{
+  kAcknowledge,
+  kError,
+  kSetLed, 
+  ControllerLeftAnalogX,
+  ControllerLeftAnalogY
+};
+
+//#define OLED_RESET 4
+//Adafruit_SSD1306 display(OLED_RESET);
 
 void setup() {
 
-    Serial.begin(9600);
+  //  Serial.begin(9600);
 
-    Serial.println("SimpleTx Starting");
+  // Serial.println("SimpleTx Starting");
 
     radio.begin();
     radio.setDataRate( RF24_250KBPS );
@@ -68,7 +84,9 @@ void setup() {
     radio.openWritingPipe(slaveAddress);
     radio.openWritingPipe(slaveAddress2);
     
+     DisplayInit();
      PlaystationControllerInit();
+     BrainInit();
 }
 
 //====================
@@ -77,12 +95,23 @@ void loop() {
   
     currentMillis = millis();
     if (currentMillis - prevMillis >= txIntervalMillis) {
-   
-   ReadPlaystationController();
-        
-        prevMillis = millis();
+      ReadPlaystationController();
+      cmdMessenger.feedinSerialData();
+      prevMillis = millis();
     }
 }
+
+
+void DisplayInit()
+{
+   // display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  
+   // display.clearDisplay();
+   // display.display();
+   // LOG(2,2,true,"SKYCAM");
+}
+
+bool stateLX = false;
+bool stateLY = false;
 
 void ReadPlaystationController()
 {
@@ -92,7 +121,35 @@ void ReadPlaystationController()
   bool DpadL = ps2x.Button(PSB_PAD_LEFT);
   bool DpadR = ps2x.Button(PSB_PAD_RIGHT);
   int LX = ps2x.Analog(PSS_LX) - 128;
-  int LY = ps2x.Analog(PSS_LY) - 128;
+      if ( abs(LX) > ANALOG_MOVEMENT_TOLERANCE )
+      { 
+        stateLX = true;
+        cmdMessenger.sendCmd(ControllerLeftAnalogX, float( LX ));
+      }
+      else
+      {
+        if ( stateLX )
+        {
+          cmdMessenger.sendCmd(ControllerLeftAnalogX, float( 0 ));
+          stateLX = false;
+        }
+      }
+
+      
+      int LY = -1 * ( ps2x.Analog(PSS_LY) - 128 );
+      if ( abs(LY) > ANALOG_MOVEMENT_TOLERANCE )
+      {
+        stateLY = true;
+        cmdMessenger.sendCmd(ControllerLeftAnalogY,  float( LY ));
+      }
+       else
+      {
+        if ( stateLY )
+        {
+          cmdMessenger.sendCmd(ControllerLeftAnalogY, float( 0 ));
+          stateLY = false;
+        }
+      }
   int RX = ps2x.Analog(PSS_RX) - 128;
   int RY = ( ps2x.Analog(PSS_RY) - 128 ) * -1;
   bool ButtonX = ps2x.NewButtonState(PSB_CROSS);
@@ -107,7 +164,7 @@ void ReadPlaystationController()
 
   if ( DpadU )
     {   
-      Serial.println("In");
+ //     Serial.println("In");
       dataToSend[0] = 1;
       dataToSend[1] = 2;
       dataToSend[2] = LX;
@@ -115,7 +172,7 @@ void ReadPlaystationController()
     }
   if ( DpadD )
   {   
-    Serial.println("Out");
+  //  Serial.println("Out");
     dataToSend[0] = 1;
     dataToSend[1] = 1;
     dataToSend[2] = LX;
@@ -135,6 +192,33 @@ void ReadPlaystationController()
 
 }
 
+void BrainInit()
+{
+   Serial.begin(115200); 
+ 
+  //cmdMessenger.printLfCr();               // Adds newline to every command
+    cmdMessenger.attach(  kSetLed,          OnRecievedSerial_Led);
+    cmdMessenger.attach(  ControllerLeftAnalogX, OnRecievedSerial_Frequency);
+    cmdMessenger.sendCmd( kAcknowledge,     "Started");
+}
+  
+  float ledFrequency   = 1.0; 
+  bool messageReceived = false;
+  
+  void OnRecievedSerial_Frequency()
+  {
+    // Read led state argument, interpret string as boolean
+    ledFrequency = cmdMessenger.readFloatArg();
+    messageReceived = true;
+    cmdMessenger.sendCmd(kAcknowledge,ledFrequency);
+  }
+  
+  void OnRecievedSerial_Led()
+  {
+    // Read led state argument, interpret string as boolean
+    bool ledState = cmdMessenger.readBoolArg();
+    cmdMessenger.sendCmd(kAcknowledge,ledState);
+  }
 
 
 
@@ -144,8 +228,8 @@ void PlaystationControllerInit()
   int error = ps2x.config_gamepad(PS2_CLK, PS2_CMD, PS2_SEL, PS2_DAT, pressures, rumble);
   if ( error > 0 )
   {
-    Serial.print("Error setting up controller: ");
-    Serial.println( error );
+  //  Serial.print("Error setting up controller: ");
+ //   Serial.println( error );
   }
 }
 //====================
@@ -157,14 +241,15 @@ void send() {
       
     if (rslt) 
     {
-        Serial.println("Acknowledge received");
+       // Serial.println("Acknowledge received");
     }
     else 
     {
-      Serial.println("Acknowledge Failed");
+    //  Serial.println("Acknowledge Failed");
      //  LOG(1,2,true,"Tx failed");
     }
 }
+
 
 
 
