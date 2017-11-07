@@ -165,7 +165,7 @@ void showData() {
        byte command = dataReceived[0] ;
        byte action = dataReceived[1] ;
        byte parameter1 = dataReceived[2] ;
-       LOG(5, 2, false ,  "C" + String(command)); // + " A" + String(action) + " P" + String(parameter1));
+       LOG(5, 2, false ,  "C" + String(command) + " A" + String(action) + " P" + String(parameter1));
 
         Serial.print("Command: ");
         Serial.print( command );
@@ -195,10 +195,14 @@ void showData() {
           int speed;
           speed = parameter1;
               LOG(1,2,false,"SPD:" + String(speed)  );
-         
-          if ( speed > 127 ) 
+
+          if ( speed == 128 )
           {
-            int x = map( speed-127  , 0 , 128 , 120, 200 );
+            motorControl.Stop();
+          }
+          else if ( speed > 127 ) 
+          {
+            int x = map( speed-127  , 0 , 128 , 00, 210 );
             LOG(3,2,false,"IN:" + String(x)  );
             movement =  Movement( x , 30 , true);
             motorControl.DirectionForward(); 
@@ -206,7 +210,7 @@ void showData() {
           } 
           else
           {
-            int x = map( 127-speed , 0 , 128 , 120 , 200 );
+            int x = map( 127-speed , 0 , 128 ,00 , 210 );
             LOG(3,2,false,"OUT:" + String(x)  );
           // movement =  Movement( x , 30 , false);
            motorControl.DirectionReverse();

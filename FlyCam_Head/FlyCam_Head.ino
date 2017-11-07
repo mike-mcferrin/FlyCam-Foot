@@ -157,8 +157,9 @@ void ReadPlaystationController()
         if ( stateLY )
         {
         SendControlCommand(2,0);
+        delay(100);
+        MotorOut(1, 128);
         stateLY = false;
-        MotorOut(1, 0);
         }
       }
 
