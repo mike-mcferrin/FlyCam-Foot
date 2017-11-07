@@ -182,12 +182,12 @@ void showData() {
         
           if ( action == 1 )
           {
-              movement =  Movement(255,30,true);
+              movement =  Movement(200,30,true); // 0-255 ,30 min
               movement.Start();
           }
           if ( action == 2 )
           {
-              movement =  Movement(255,30,false);
+              movement =  Movement(200,30,false);
               movement.Start();
           }
           break;
@@ -196,18 +196,18 @@ void showData() {
           speed = parameter1;
               LOG(1,2,false,"SPD:" + String(speed)  );
          
-          if ( parameter1 > 0 ) 
+          if ( speed > 127 ) 
           {
-            int x = map( speed  , 0 , 128 , 50 , 254 );
-            LOG(3,2,false,"X:" + String(x)  );
+            int x = map( speed-127  , 0 , 128 , 120, 200 );
+            LOG(3,2,false,"IN:" + String(x)  );
             movement =  Movement( x , 30 , true);
             motorControl.DirectionForward(); 
             motorControl.SetSpeed( x );
           } 
           else
           {
-            int x = map( -speed , 0 , 128 , 50 , 254 );
-            LOG(3,2,false,"X:" + String(x)  );
+            int x = map( 127-speed , 0 , 128 , 120 , 200 );
+            LOG(3,2,false,"OUT:" + String(x)  );
           // movement =  Movement( x , 30 , false);
            motorControl.DirectionReverse();
            motorControl.SetSpeed( x );

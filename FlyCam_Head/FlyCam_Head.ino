@@ -142,13 +142,15 @@ void ReadPlaystationController()
         }
       }
 
+       //MotorOut(1,  ps2x.Analog(PSS_LY)  );
+
       
       int LY = -1 * ( ps2x.Analog(PSS_LY) - 128 );
       if ( abs(LY) > ANALOG_MOVEMENT_TOLERANCE && ( stateLY || ( (!stateLY && LY < 127) && (!stateLY && LY > -127) ) ) )
       {
         stateLY = true;
         SendControlCommand(2,LY);
-        MotorOut(1, LY );
+        MotorOut(1,   ps2x.Analog(PSS_LY)  );
       }
        else
       {
@@ -163,7 +165,7 @@ void ReadPlaystationController()
       int RX = ps2x.Analog(PSS_RX) - 128;
       if ( abs(RX) > ANALOG_MOVEMENT_TOLERANCE  && ( stateRX || ( (!stateRX && RX < 127) && (!stateRX && RX > -127) ) ) )
       { 
-        stateRX = true;
+          stateRX = true;
         SendControlCommand(3,RX);
       }
       else
@@ -179,6 +181,14 @@ void ReadPlaystationController()
       int RY = -1 * ( ps2x.Analog(PSS_RY) - 128 );
       if ( abs(RY) > ANALOG_MOVEMENT_TOLERANCE && ( stateRY || ( (!stateRY && RY < 127) && (!stateRY && RY > -127) ) ) )
       {
+        if ( stateRY == false )
+        {
+          if ( RY > 0 )
+            MotorStep(1,1);
+          else
+            MotorStep(2,2);
+        
+        }
         stateRY = true;
         SendControlCommand(4,RY);
       }
@@ -201,7 +211,17 @@ void ReadPlaystationController()
   bool ButtonR1 = ps2x.Button(PSB_R1);
   bool ButtonR2 = ps2x.Button(PSB_R2);
 
+  if ( ButtonR2 )
+  {
+     MotorStep(1,1);
+  }
 
+  if ( ButtonR1 )
+  {
+     MotorStep(2,2);
+  }
+
+  
   if ( DpadU )
     {   
       if ( !stateDpadU )
@@ -248,6 +268,14 @@ void MotorOut(long motor, int speed)
       send(); 
 }
 
+
+void MotorStep(long motor, int direction)
+{
+      dataToSend[0] = 1;
+      dataToSend[1] = motor;
+      dataToSend[2] = direction ;
+      send(); 
+}
 void SendControlCommand(float bank, float value)
 {
         cmdMessenger.sendCmdStart(ControllerLeftAnalog);
