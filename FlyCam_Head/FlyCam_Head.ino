@@ -266,6 +266,10 @@ void MotorOut(long motor, int speed)
       dataToSend[0] = 2;
       dataToSend[1] = 0;
       dataToSend[2] = speed ;
+      
+      //SetData(0, 2);
+      //SetData(1, 1);
+      //SetData(2, speed);
       send(); 
 }
 
@@ -277,6 +281,14 @@ void MotorStep(long motor, int direction)
       dataToSend[2] = direction ;
       send(); 
 }
+void SetData(int address, long longInt )
+{   int addressOffset = 4 * address;          
+    dataToSend[addressOffset+0] = (int)((longInt >> 24) & 0xFF) ;
+    dataToSend[addressOffset+1] = (int)((longInt >> 16) & 0xFF) ;
+    dataToSend[addressOffset+2] = (int)((longInt >> 8) & 0XFF);
+    dataToSend[addressOffset+3] = (int)((longInt & 0XFF));
+}   
+
 void SendControlCommand(float bank, float value)
 {
         cmdMessenger.sendCmdStart(ControllerLeftAnalog);
