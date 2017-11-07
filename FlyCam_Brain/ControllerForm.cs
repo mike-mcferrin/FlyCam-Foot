@@ -22,13 +22,14 @@ namespace ArduinoController
             _arduinoController = new ArduinoController();
             _arduinoController.Setup(this);
             _arduinoController.CallOut += _arduinoController_CallOut;
-            WPFControl1.Child = list;
+            WPFControl1.Child = wpfControl;
         }
-        FootSelectionList list = new FootSelectionList();
+        FootSelectionList wpfControl = new FootSelectionList();
         private void _arduinoController_CallOut(ArduinoController a, float b, float c, EventArgs e)
         {
-           
-            list.SetXY(b,c);
+
+            _arduinoController.SetLedFrequency(1, b, c);
+            wpfControl.SetXY(b,c);
         }
 
         // Update arduinoController on value checkbox checked/unchecked

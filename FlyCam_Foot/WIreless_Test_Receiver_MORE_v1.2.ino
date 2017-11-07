@@ -1,3 +1,4 @@
+#include "EEPromManager.h"
 
 
 int textHeight = 8;
@@ -9,19 +10,51 @@ void LOG(int line, char* text)
 }
 void LOG(int line, int fontsize, bool invert, char* text)
 {
-  display.setTextSize(fontsize);
-  display.setCursor(xOffset, yOffset + ( line - 1 ) *  ( textHeight * fontsize ));
-  if (invert)
-  {   display.fillRect(0, yOffset + ( line - 1 )* ( textHeight * fontsize ), display.width(), ( textHeight * fontsize ), WHITE);
-      display.setTextColor(BLACK);
-  } else
-  {
-      display.fillRect(0, yOffset + ( line - 1 )* ( textHeight * fontsize ), display.width(), ( textHeight * fontsize ), BLACK);
-      display.setTextColor(WHITE);
-  }
+  LOG_setup(line,fontsize,invert);
   display.println(text);
   display.display();
 }
+void LOG(int line, int fontsize, bool invert, String text)
+{
+  LOG_setup(line,fontsize,invert);
+  display.println(text);
+  display.display();
+}
+void LOG_setup(int line, int fontsize, bool invert)
+{
+   display.setTextSize(fontsize);
+  display.setCursor(xOffset, yOffset + ( line - 1 ) *  ( textHeight  ));
+  if (invert)
+  {   display.fillRect(0, yOffset + ( line - 1 )* ( textHeight ), display.width(), ( textHeight * fontsize ), WHITE);
+      display.setTextColor(BLACK);
+  } else
+  {
+      display.fillRect(0, yOffset + ( line - 1 )* ( textHeight  ), display.width(), ( textHeight * fontsize ), BLACK);
+      display.setTextColor(WHITE);
+  }
+}
+
+
+/**** EEPROM*****/
+
+void ReadSettings()
+{
+  EEPROM_readAnything(0,settings);
+}
+
+void WriteSettings(int id, long position, long min, long max)
+{
+  settings.id = id;
+  settings.positionCurrent = position;
+  settings.positionMinimum = min;
+  settings.positionMaximum = max;
+  
+  EEPROM_writeAnything(0,settings);
+}
+
+/**** EEPROM*****/
+
+
 
 
 long LoadSetting(int setting)

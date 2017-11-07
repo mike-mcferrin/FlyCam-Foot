@@ -14,6 +14,7 @@
 #include <CmdMessenger.h>
 //#include <Adafruit_GFX.h>
 //#include <Adafruit_SSD1306.h>
+
     
 
 #define ANALOG_MOVEMENT_TOLERANCE 4
@@ -57,7 +58,7 @@ int txNum = 0;
 
 unsigned long currentMillis;
 unsigned long prevMillis;
-unsigned long txIntervalMillis = 30; // send once per second
+unsigned long txIntervalMillis = 50; // send once per second
 
 CmdMessenger cmdMessenger = CmdMessenger(Serial);
 enum
@@ -120,6 +121,7 @@ bool stateDpadD = false;
 void ReadPlaystationController()
 {
   ps2x.read_gamepad(false, vibrate); //read controller and set large motor to spin at 'vibrate' speed
+
   bool DpadU = ps2x.Button(PSB_PAD_UP);
   bool DpadD = ps2x.Button(PSB_PAD_DOWN);
   bool DpadL = ps2x.Button(PSB_PAD_LEFT);
@@ -205,11 +207,6 @@ void ReadPlaystationController()
         SendControlCommand(6,1);
         stateDpadU = true;
       }
- //     Serial.println("In");
-      dataToSend[0] = 1;
-      dataToSend[1] = 2;
-      dataToSend[2] = LX;
-       send(); 
     }
     else
     {
@@ -226,10 +223,7 @@ void ReadPlaystationController()
         stateDpadD = true;
       }
   //  Serial.println("Out");
-    dataToSend[0] = 1;
-    dataToSend[1] = 1;
-    dataToSend[2] = LX;
-    send();    
+   
   } else
     {
       if ( stateDpadD )
@@ -239,18 +233,25 @@ void ReadPlaystationController()
     }
 
   
-  if ( ButtonL2 )
-  {
-      dataToSend[0] = 2;
-      dataToSend[1] = 1;
-      dataToSend[2] = LY;
-      send();    
-  }
-
+ 
  
 
 }
 
+void MotorOut(float motor, float speed)
+{
+      dataToSend[0] = 1;
+      dataToSend[1] = motor;
+      dataToSend[2] = speed;
+      send(); 
+}
+void MotorIn ()
+{
+    dataToSend[0] = 1;
+    dataToSend[1] = 1;
+    dataToSend[2] = LX;
+    send();    
+}
 void SendControlCommand(float bank, float value)
 {
         cmdMessenger.sendCmdStart(ControllerLeftAnalog);

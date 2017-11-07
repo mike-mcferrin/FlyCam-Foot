@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:_6_ArduinoController"
              mc:Ignorable="d" Height="451.133" Width="1432.924">
-    <DockPanel LastChildFill="False" Height="429" VerticalAlignment="Top" Margin="0,1,-462.333,0" HorizontalAlignment="Left" Width="1569">
+    <DockPanel LastChildFill="False" Margin="0,1,-136,-283" HorizontalAlignment="Left" Width="1569" Height="733" VerticalAlignment="Top">
         <DockPanel.Background>
             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                 <GradientStop Color="Black" Offset="0.269"/>
@@ -14,7 +14,7 @@
                 <GradientStop Color="#FFE1E1E1" Offset="0.98"/>
             </LinearGradientBrush>
         </DockPanel.Background>
-        <ListBox x:Name="ListBox_Mode_Copy" HorizontalAlignment="Left" Height="374" VerticalAlignment="Top" Width="385" Background="#FFCDD4E0" Margin="10">
+        <ListBox x:Name="ListBox_Mode" HorizontalAlignment="Left" Height="374" VerticalAlignment="Top" Width="385" Background="#FFCDD4E0" Margin="10">
             <ListBox.Effect>
                 <DropShadowEffect BlurRadius="20"/>
             </ListBox.Effect>
@@ -34,7 +34,7 @@
                 </ListBoxItem.Effect>
             </ListBoxItem>
         </ListBox>
-        <ListBox x:Name="ListBox_Mode" HorizontalAlignment="Left" Height="374" VerticalAlignment="Top" Width="244" Margin="10" Foreground="#FFC52525" BorderBrush="#FF7593EE">
+        <ListBox x:Name="ListBox_Foot" HorizontalAlignment="Left" Height="374" VerticalAlignment="Top" Width="246" Margin="10,10,10,0" Foreground="#FFC52525" BorderBrush="#FF7593EE" VerticalContentAlignment="Center">
             <ListBox.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="Black" Offset="0"/>
@@ -44,19 +44,29 @@
             <ListBox.Effect>
                 <DropShadowEffect BlurRadius="20"/>
             </ListBox.Effect>
-            <Button x:Name="Foot1" Content="FOOT 1" FontSize="36" FontFamily="Arial Black" HorizontalAlignment="Center" Height="72" Width="200" Margin="10px" Click="Foot_1_Click">
-                <Button.Effect>
-                    <DropShadowEffect BlurRadius="12"/>
-                </Button.Effect>
-            </Button>
-            <Button x:Name="Foot2" Content="FOOT 2" FontSize="36" FontFamily="Arial Black" Height="76" Width="200" Margin="10px" Click="Foot_2_Click">
-                <Button.Effect>
-                    <DropShadowEffect BlurRadius="12"/>
-                </Button.Effect>
-            </Button>
+            <ListBoxItem Content="1" Foreground="White" FontSize="48" IsSelected="True" HorizontalContentAlignment="Center">
+                <ListBoxItem.Effect>
+                    <DropShadowEffect/>
+                </ListBoxItem.Effect>
+            </ListBoxItem>
+            <ListBoxItem Content="2" Foreground="White" FontSize="48" IsSelected="True" HorizontalContentAlignment="Center">
+                <ListBoxItem.Effect>
+                    <DropShadowEffect/>
+                </ListBoxItem.Effect>
+            </ListBoxItem>
+            <ListBoxItem Content="3" Foreground="White" FontSize="48" IsSelected="True" HorizontalContentAlignment="Center">
+                <ListBoxItem.Effect>
+                    <DropShadowEffect/>
+                </ListBoxItem.Effect>
+            </ListBoxItem>
+            <ListBoxItem Content="4" Foreground="White" FontSize="48" IsSelected="True" RenderTransformOrigin="0.508,-3.044" VerticalAlignment="Bottom" HorizontalContentAlignment="Center">
+                <ListBoxItem.Effect>
+                    <DropShadowEffect/>
+                </ListBoxItem.Effect>
+            </ListBoxItem>
         </ListBox>
         <Canvas Height="374" VerticalAlignment="Top" Width="363" Margin="10,10,10,0">
-            <Line x:Name="Line1" X1="200" Y1="200" X2="200" Y2="220" Fill="#FF550C0C" Stroke="#FFD9FF02" StrokeThickness="20" Height="317" Width="313" Canvas.Left="28" Canvas.Top="23">
+            <Line x:Name="Line1"  X1="158" Y1="158" X2="158" Y2="178" Fill="#FF550C0C" Stroke="#FFD9FF02" StrokeThickness="20" Height="317" Width="313" Canvas.Left="28" Canvas.Top="23">
                 <Line.Effect>
                     <BlurEffect Radius="15"/>
                 </Line.Effect>
@@ -71,6 +81,24 @@
             <Canvas.Effect>
                 <DropShadowEffect BlurRadius="20"/>
             </Canvas.Effect>
+        </Canvas>
+        <Canvas Height="374" VerticalAlignment="Top" Width="363" Margin="10,10,10,0">
+
+            <Canvas.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Black" Offset="0"/>
+                    <GradientStop Color="#FF30038A" Offset="1"/>
+                </LinearGradientBrush>
+            </Canvas.Background>
+            <Canvas.Effect>
+                <DropShadowEffect BlurRadius="20"/>
+            </Canvas.Effect>
+            <Line x:Name="Line2" X1="158" Y1="158" X2="158" Y2="178" Fill="#FF550C0C" Stroke="#FFD9FF02" StrokeThickness="20" Height="317" Width="313" Canvas.Left="28" Canvas.Top="23">
+                <Line.Effect>
+                    <BlurEffect Radius="15"/>
+                </Line.Effect>
+            </Line>
+
         </Canvas>
     </DockPanel>
 </UserControl>

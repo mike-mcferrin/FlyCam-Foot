@@ -28,7 +28,6 @@ const byte thisSlaveAddress[5] = {'R','x','A','A','A'};
 
 RF24 radio(CE_PIN, CSN_PIN);
 
-long ID;
 
 struct MyData {
   int channel;
@@ -56,6 +55,17 @@ Movement movement;
 /*******/
 
 
+
+/**** EEPROM*****/
+struct config_t
+{
+    int id;
+    long positionCurrent;
+    long positionMinimum;
+    long positionMaximum;
+} settings;
+
+
 #define OLED_RESET 4
 Adafruit_SSD1306 display(OLED_RESET);
 
@@ -64,12 +74,17 @@ void setup() {
       SettingsInit();
  
     Serial.begin(9600);
+
+     Serial.println( settings.id );
+     Serial.println( settings.positionCurrent );
+     Serial.println( settings.positionMinimum );
+     Serial.println( settings.positionMaximum );
+    
     display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  
     display.clearDisplay();
     display.display();
-    LOG(2,2,true,"SKYCAM");
-    char ids = ID+48;
-    LOG(1,2,true,&ids);
+    LOG(3,1,true, "" );
+    LOG(4,4,true, "ID: " + String(settings.id) );
     LOG(8,1,true,"    SkyKam RX v1.2");
     Serial.println("SimpleRx Starting");
     radio.begin();
@@ -86,8 +101,15 @@ void setup() {
 
 void SettingsInit()
 {
-  SaveSetting(0,2);
-  ID = LoadSetting( 0 );
+  /* WriteSettings(2,1200,100,9999999);
+      settings.id = 0;
+      settings.positionCurrent = 0;
+      settings.positionMinimum = 0;
+      settings.positionMaximum = 0;
+  */
+    ReadSettings();
+    
+
 }
 
 

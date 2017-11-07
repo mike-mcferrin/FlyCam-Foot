@@ -34,18 +34,72 @@ namespace _6_ArduinoController
 
         }
 
-        private float currentX = 0;
-        private float currentY = 0;
+        private float currentX = 128;
+        private float currentY = 128;
+        private float currentX2 = 128;
+        private float currentY2 = 128;
+
         public void SetXY(float a, float val)
         {
-            if (a == 1)
-                currentX = val;
-            if (a == 2)
-                currentY = - val;
-            Line1.X1 = currentX + (Line1.Width / 2);
-            Line1.X2 = currentX + (Line1.Width / 2);
-            Line1.Y1 = currentY + (Line1.Height / 2);
-            Line1.Y2 = currentY + (Line1.Height / 2) + 20;
+            switch (a)
+            {
+                case 1:
+                case 2:
+
+                    if (a == 1)
+                        currentX = val;
+                    if (a == 2)
+                        currentY = -val;
+                    Line1.X1 = currentX + (Line1.Width / 2);
+                    Line1.X2 = currentX + (Line1.Width / 2);
+                    Line1.Y1 = currentY + (Line1.Height / 2);
+                    Line1.Y2 = currentY + (Line1.Height / 2) + 20;
+
+                    break;
+
+                case 3:
+                case 4:
+
+                    if (a == 3)
+                        currentX2 = val;
+                    if (a == 4)
+                        currentY2 = -val;
+                    Line2.X1 = currentX2 + (Line2.Width / 2);
+                    Line2.X2 = currentX2 + (Line2.Width / 2);
+                    Line2.Y1 = currentY2 + (Line2.Height / 2);
+                    Line2.Y2 = currentY2 + (Line2.Height / 2) + 20;
+
+                    break;
+
+
+                case 6:
+
+                    var selectedItem = ListBox_Mode.SelectedItems[0];
+
+                    if (val < 0)
+                    {
+                        for (var x = 0; x < ListBox_Mode.Items.Count; x++)
+                        {
+                            var currentItem = (ListBoxItem) ListBox_Mode.Items.GetItemAt(x);
+                            if (currentItem == selectedItem)
+                            {
+                                ((ListBoxItem)ListBox_Mode.Items.GetItemAt(Math.Min(ListBox_Mode.Items.Count - 1, x + 1))).IsSelected = true;
+                            }
+                        }
+                    }
+                    if (val > 0)
+                    {
+                        for (var x = ListBox_Mode.Items.Count - 1; x >= 0; x--)
+                        {
+                            var currentItem = (ListBoxItem)ListBox_Mode.Items.GetItemAt(x);
+                            if (currentItem == selectedItem)
+                            {
+                              (  (ListBoxItem)ListBox_Mode.Items.GetItemAt(Math.Max(0, x - 1) )).IsSelected = true;
+                            }
+                        }
+                    }
+                    break;
+            }
         }
 
      
