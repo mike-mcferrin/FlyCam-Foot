@@ -35,11 +35,11 @@ struct MyData {
   String status;
   int intArray[2];
   float floatArray[2];
-  char dataReceived[20];
+  byte dataReceived[20];
 };
 
 MyData lastReceived;
-char dataReceived[20]; // this must match dataToSend in the TX
+byte dataReceived[20]; // this must match dataToSend in the TX
 bool newData = false;
 
 //===========
@@ -159,21 +159,20 @@ void getData() {
 void showData() {
     if (newData == true) {
         Serial.print("Received: ");
-        Serial.println(dataReceived);
+      //  Serial.println(dataReceived);
        Serial.print("Command: ");
     
-       char command = dataReceived[0] ;
-       char action = dataReceived[1] ;
-       char parameter1 = dataReceived[2] ;
-       int parameter1int = dataReceived[2];
-       LOG(3,dataReceived);
+       byte command = dataReceived[0] ;
+       byte action = dataReceived[1] ;
+       byte parameter1 = dataReceived[2] ;
+       LOG(5, 2, false ,  "C" + String(command)); // + " A" + String(action) + " P" + String(parameter1));
 
         Serial.print("Command: ");
         Serial.print( command );
         Serial.print(" Action: ");
         Serial.print( action );
         Serial.print(" Parameter: ");
-        Serial.print( parameter1int );
+        Serial.print( parameter1 );
         Serial.println();
     
 
@@ -193,17 +192,27 @@ void showData() {
           }
           break;
         case 2:
-          if ( parameter1 > 0 )
+          int speed;
+          speed = parameter1;
+              LOG(1,2,false,"SPD:" + String(speed)  );
+         
+          if ( parameter1 > 0 ) 
           {
-            int x = map( parameter1 , 0 , 128 , 50 , 254 );
+            int x = map( speed  , 0 , 128 , 50 , 254 );
+            LOG(3,2,false,"X:" + String(x)  );
             movement =  Movement( x , 30 , true);
+            motorControl.DirectionForward(); 
+            motorControl.SetSpeed( x );
           } 
           else
           {
-            int x = map( -parameter1 , 0 , 128 , 50 , 254 );
-            movement =  Movement( x , 30 , false);
+            int x = map( -speed , 0 , 128 , 50 , 254 );
+            LOG(3,2,false,"X:" + String(x)  );
+          // movement =  Movement( x , 30 , false);
+           motorControl.DirectionReverse();
+           motorControl.SetSpeed( x );
           }
-          movement.Start();
+         // movement.Start();
           break;
         case 5:
           movement =  Movement(220,80,false);

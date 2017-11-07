@@ -148,6 +148,7 @@ void ReadPlaystationController()
       {
         stateLY = true;
         SendControlCommand(2,LY);
+        MotorOut(1, LY );
       }
        else
       {
@@ -155,6 +156,7 @@ void ReadPlaystationController()
         {
         SendControlCommand(2,0);
         stateLY = false;
+        MotorOut(1, 0);
         }
       }
 
@@ -238,20 +240,14 @@ void ReadPlaystationController()
 
 }
 
-void MotorOut(float motor, float speed)
+void MotorOut(long motor, int speed)
 {
-      dataToSend[0] = 1;
-      dataToSend[1] = motor;
-      dataToSend[2] = speed;
+      dataToSend[0] = 2;
+      dataToSend[1] = 0;
+      dataToSend[2] = speed ;
       send(); 
 }
-void MotorIn ()
-{
-    dataToSend[0] = 1;
-    dataToSend[1] = 1;
-    dataToSend[2] = LX;
-    send();    
-}
+
 void SendControlCommand(float bank, float value)
 {
         cmdMessenger.sendCmdStart(ControllerLeftAnalog);
