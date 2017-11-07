@@ -35,7 +35,7 @@ byte vibrate = 0;
 
 
 const byte slaveAddress[5] = {'R','x','A','A','A'};
-const byte slaveAddress2[5] = {'R','x','A','A','A'};
+const byte slaveAddress2[5] = {'R','x','A','A','B'};
 
 RF24 radio(CE_PIN, CSN_PIN); // Create a Radio
 
@@ -53,6 +53,7 @@ struct MyData {
 MyData data;
 String stringToSend = "";
 char dataToSend[20] = "Message 0";
+char dataReceived[20] = "dsfsdf  ";
 int txNum = 0;
 
 
@@ -83,7 +84,7 @@ void setup() {
     radio.setDataRate( RF24_250KBPS );
     radio.setRetries(3,5); // delay, count
     radio.openWritingPipe(slaveAddress);
-    radio.openWritingPipe(slaveAddress2);
+    radio.openReadingPipe(1,slaveAddress2);
     
      DisplayInit();
      PlaystationControllerInit();
@@ -91,6 +92,7 @@ void setup() {
 }
 
 //====================
+bool newData = false;
 
 void loop() {
   
@@ -99,6 +101,32 @@ void loop() {
       ReadPlaystationController();
       cmdMessenger.feedinSerialData();
       prevMillis = millis();
+    }
+       getData();
+       if ( newData )
+       { 
+
+        byte id = dataReceived[0] ;
+        byte command = dataReceived[1] ;
+        byte parameter1 = dataReceived[2] ;
+       
+        SendControlCommand(11,command);
+        newData = false;
+        
+       }
+}
+
+
+
+void getData() {
+    if ( radio.available() ) 
+    {
+       Serial.println("Data received 1");
+        radio.read( &dataReceived, sizeof(dataReceived) );
+
+        newData = true;
+ 
+      
     }
 }
 
@@ -117,6 +145,8 @@ bool stateRX = false;
 bool stateRY = false;
 bool stateDpadU = false;
 bool stateDpadD = false;
+bool stateButtonL1 = false;
+bool stateButtonR1 = false;
 
 void ReadPlaystationController()
 {
@@ -127,6 +157,51 @@ void ReadPlaystationController()
   bool DpadL = ps2x.Button(PSB_PAD_LEFT);
   bool DpadR = ps2x.Button(PSB_PAD_RIGHT);
   
+  bool ButtonX = ps2x.NewButtonState(PSB_CROSS);
+  bool ButtonO = ps2x.NewButtonState(PSB_CIRCLE);
+  bool ButtonS = ps2x.NewButtonState(PSB_SQUARE);
+  bool ButtonT = ps2x.NewButtonState(PSB_TRIANGLE);
+  bool ButtonL1 = ps2x.Button(PSB_L1);
+  bool ButtonL2 = ps2x.Button(PSB_L2);
+  bool ButtonR1 = ps2x.Button(PSB_R1);
+  bool ButtonR2 = ps2x.Button(PSB_R2);
+
+ if ( ButtonL1 )
+    {   
+      if ( !stateButtonL1 )
+      {
+        stateButtonL1 = true;
+      }
+    }
+    else
+    {
+      if ( stateButtonL1 )
+      {
+          stateButtonL1  = false;
+          MotorOut(1, 128);
+      }
+    }
+ 
+
+ if ( ButtonR1 )
+    {   
+      if ( !stateButtonR1 )
+      {
+        stateButtonR1 = true;
+      }
+    }
+    else
+    {
+      if ( stateButtonR1 )
+      {
+          MotorOut(2, 128);
+          stateButtonR1  = false;
+      }
+    }
+ 
+
+
+ 
       int LX = ps2x.Analog(PSS_LX) - 128;
       if ( abs(LX) > ANALOG_MOVEMENT_TOLERANCE && ( stateLX || ( (!stateLX && LX < 127) && (!stateLX && LX > -127) ) ) )
       { 
@@ -142,23 +217,25 @@ void ReadPlaystationController()
         }
       }
 
-       //MotorOut(1,  ps2x.Analog(PSS_LY)  );
-
-      
+       
+       
+     
       int LY = -1 * ( ps2x.Analog(PSS_LY) - 128 );
       if ( abs(LY) > ANALOG_MOVEMENT_TOLERANCE && ( stateLY || ( (!stateLY && LY < 127) && (!stateLY && LY > -127) ) ) )
       {
         stateLY = true;
         SendControlCommand(2,LY);
-        MotorOut(1,   ps2x.Analog(PSS_LY)  );
+        if (stateButtonL1)
+        {
+          MotorOut(1,   ps2x.Analog(PSS_LY)  );
+        }
       }
        else
       {
         if ( stateLY )
         {
+          MotorOut(1, 128);
         SendControlCommand(2,0);
-        delay(100);
-        MotorOut(1, 128);
         stateLY = false;
         }
       }
@@ -182,42 +259,41 @@ void ReadPlaystationController()
       int RY = -1 * ( ps2x.Analog(PSS_RY) - 128 );
       if ( abs(RY) > ANALOG_MOVEMENT_TOLERANCE && ( stateRY || ( (!stateRY && RY < 127) && (!stateRY && RY > -127) ) ) )
       {
-        if ( stateRY == false )
-        {
-          if ( RY > 0 )
-            MotorStep(1,1);
-          else
-            MotorStep(2,2);
-        
-        }
         stateRY = true;
         SendControlCommand(4,RY);
-      }
+        if (stateButtonR1)
+        {
+          MotorOut(2,   ps2x.Analog(PSS_RY)  );
+        }
+        }
        else
       {
         if ( stateRY )
         {
-        SendControlCommand(4,0);
+           MotorOut(2, 128);
+       SendControlCommand(4,0);
         stateRY = false;
         }
       }
 
 
-  bool ButtonX = ps2x.NewButtonState(PSB_CROSS);
-  bool ButtonO = ps2x.NewButtonState(PSB_CIRCLE);
-  bool ButtonS = ps2x.NewButtonState(PSB_SQUARE);
-  bool ButtonT = ps2x.NewButtonState(PSB_TRIANGLE);
-  bool ButtonL1 = ps2x.Button(PSB_L1);
-  bool ButtonL2 = ps2x.Button(PSB_L2);
-  bool ButtonR1 = ps2x.Button(PSB_R1);
-  bool ButtonR2 = ps2x.Button(PSB_R2);
 
-  if ( ButtonR2 )
+  if ( ButtonX )
   {
      MotorStep(1,1);
   }
 
-  if ( ButtonR1 )
+  if ( ButtonT )
+  {
+     MotorStep(1,2);
+  }
+
+  if ( ButtonS )
+  {
+     MotorStep(2,1);
+  }
+
+  if ( ButtonO )
   {
      MotorStep(2,2);
   }
@@ -263,21 +339,23 @@ void ReadPlaystationController()
 
 void MotorOut(long motor, int speed)
 {
-      dataToSend[0] = 2;
-      dataToSend[1] = 0;
+      dataToSend[0] = motor;
+      dataToSend[1] = 2;
       dataToSend[2] = speed ;
       
       //SetData(0, 2);
       //SetData(1, 1);
       //SetData(2, speed);
       send(); 
+                delay(30);
+
 }
 
 
 void MotorStep(long motor, int direction)
 {
-      dataToSend[0] = 1;
-      dataToSend[1] = motor;
+      dataToSend[0] = motor;
+      dataToSend[1] = 1;
       dataToSend[2] = direction ;
       send(); 
 }

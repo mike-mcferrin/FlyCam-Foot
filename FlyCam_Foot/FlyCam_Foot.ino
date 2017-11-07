@@ -25,6 +25,7 @@
 
 
 const byte thisSlaveAddress[5] = {'R','x','A','A','A'};
+const byte thisSlaveAddress2[5] = {'R','x','A','A','B'};
 
 RF24 radio(CE_PIN, CSN_PIN);
 
@@ -54,7 +55,7 @@ Movement movement;
 
 /*******/
 
-
+char dataToSend[20] = "Message 0";
 
 /**** EEPROM*****/
 struct config_t
@@ -87,9 +88,11 @@ void setup() {
     LOG(4,4,true, "ID: " + String(settings.id) );
     LOG(8,1,false,"    SkyKam RX v1.5");
     Serial.println("SimpleRx Starting");
+    delay(1000);
     radio.begin();
     radio.setDataRate( RF24_250KBPS );
     radio.openReadingPipe(1, thisSlaveAddress);
+    radio.openWritingPipe(thisSlaveAddress2);
     radio.startListening();
 
   EncoderInit();
@@ -101,36 +104,18 @@ void setup() {
 
 void SettingsInit()
 {
-  /* WriteSettings(2,1200,100,9999999);
+  /*
+   WriteSettings(2,1200,100,9999999);
       settings.id = 0;
       settings.positionCurrent = 0;
       settings.positionMinimum = 0;
       settings.positionMaximum = 0;
-  */
+  
     ReadSettings();
-    
+    */
 
 }
 
-
-
-void demoFive()
-{
-   myPosition = 0;
-   movement =  Movement(120,80,true);
-   GetEncoderValue();
-   movement.Start();
-   GetEncoderValue();
-   delay(500);
-   GetEncoderValue();
-
-    delay(3000);
-}
-
-void GetEncoderValue()
-{  //Serial.print("position: ");
-   //Serial.println(myPosition);
-}
 
 
 
@@ -172,8 +157,8 @@ void showData() {
       //  Serial.println(dataReceived);
        Serial.print("Command: ");
     
-       byte command = dataReceived[0] ;
-       byte action = dataReceived[1] ;
+       byte id = dataReceived[0] ;
+       byte command = dataReceived[1] ;
        byte parameter1 = dataReceived[2] ;
        
        //long command =  GetData(0) ;
@@ -181,71 +166,74 @@ void showData() {
        //long parameter1 = GetData(2)  ;
     
         Serial.print("Command: ");
-        Serial.print( command );
+        Serial.print( id );
         Serial.print(" Action: ");
-        Serial.print( action );
+        Serial.print( command );
         Serial.print(" Parameter: ");
         Serial.print( parameter1 );
         Serial.println();
     
-
-      switch( command )
+      if ( String( id ) == String( settings.id ) )
       {
-        case 1:
-              LOG(3,1,false,"STEP MOTOR"  );
         
-          if ( action == 1 )
+          
+          switch( command )
           {
-              movement =  Movement(230,35,true); // 0-255 ,30 min
+            case 1:
+                  LOG(3,1,false,"STEP MOTOR"  );
+            
+              if ( parameter1 == 1 )
+              {
+                  movement =  Movement(230,35,true); // 0-255 ,30 min
+                  movement.Start();
+                  LOG(4,1,false,"FORWARD"  );
+              }
+              if ( parameter1 == 2 )
+              {
+                  movement =  Movement(230,35,false);
+                  movement.Start();
+                  LOG(4,1,false,"REVERSE"  );
+              }
+              break;
+            case 2:
+              int speed;
+              speed = parameter1;
+                  LOG(3,1,false, "DRIVE MOTOR" );
+    
+              if ( speed == 128 )
+              {
+                LOG(4,1,false,"STOP"  );
+                motorControl.Stop();
+              }
+              else if ( speed > 127 ) 
+              {
+                int x = map( speed-127  , 0 , 128 , 00, 210 );
+                LOG(4,1,false, String("FORWARD")  );
+                movement =  Movement( x , 30 , true);
+                motorControl.DirectionForward(); 
+                motorControl.SetSpeed( x );
+              } 
+              else
+              {
+                int x = map( 127-speed , 0 , 128 ,00 , 210 );
+                LOG(4,1,false, String("REVERSE" )  );
+              // movement =  Movement( x , 30 , false);
+               motorControl.DirectionReverse();
+               motorControl.SetSpeed( x );
+              }
+             // movement.Start();
+              break;
+            case 5:
+              movement =  Movement(220,80,false);
               movement.Start();
-              LOG(4,1,false,"FORWARD"  );
+              break;
+            
           }
-          if ( action == 2 )
-          {
-              movement =  Movement(230,35,false);
-              movement.Start();
-              LOG(4,1,false,"REVERSE"  );
-          }
-          break;
-        case 2:
-          int speed;
-          speed = parameter1;
-              LOG(3,1,false, "DRIVE MOTOR" );
-
-          if ( speed == 128 )
-          {
-            LOG(4,1,false,"STOP"  );
-            motorControl.Stop();
-          }
-          else if ( speed > 127 ) 
-          {
-            int x = map( speed-127  , 0 , 128 , 00, 210 );
-            LOG(4,1,false, String("FORWARD")  );
-            movement =  Movement( x , 30 , true);
-            motorControl.DirectionForward(); 
-            motorControl.SetSpeed( x );
-          } 
-          else
-          {
-            int x = map( 127-speed , 0 , 128 ,00 , 210 );
-            LOG(4,1,false, String("REVERSE" )  );
-          // movement =  Movement( x , 30 , false);
-           motorControl.DirectionReverse();
-           motorControl.SetSpeed( x );
-          }
-         // movement.Start();
-          break;
-        case 5:
-          movement =  Movement(220,80,false);
-          movement.Start();
-          break;
-        
+         
+           LOG(5, 1, false ,  String(id));
+           LOG(6, 1, false,   String(command)); 
+           LOG(7, 1, false,   String(parameter1));
       }
-     
-       LOG(5, 1, false ,  String(command));
-       LOG(6, 1, false,   String(action)); 
-       LOG(7, 1, false,   String(parameter1));
-       
         newData = false;
     }
 }
