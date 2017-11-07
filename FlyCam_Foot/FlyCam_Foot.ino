@@ -216,7 +216,7 @@ void showData() {
           } 
           else
           {
-            int x = map( (speed) , 0 , 128 , 0 , 128 );
+            int x = map( (128-speed) , 0 , 128 , 0 , 128 );
             LOG(3,2,false,"X:" + String(x)  );
           // movement =  Movement( x , 30 , false);
            motorControl.DirectionReverse();
