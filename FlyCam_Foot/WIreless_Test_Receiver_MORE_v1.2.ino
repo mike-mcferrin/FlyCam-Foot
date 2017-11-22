@@ -14,11 +14,45 @@ void LOG(int line, int fontsize, bool invert, char* text)
   display.println(text);
   display.display();
 }
-void LOG(int line, int fontsize, bool invert, String text)
+void LOG(int line, int fontsize, bool invert, char text , bool IsCharArray)
 {
   LOG_setup(line,fontsize,invert);
   display.println(text);
   display.display();
+}
+void LOG(int line, int fontsize, bool invert, String text)
+{
+  LOG_setup(line,fontsize,invert);
+  if ( text != "" )
+  {
+    display.println(text);
+    display.display();
+  }
+}
+void LOG(int line, int fontsize, bool invert, String text, bool stayOnLine)
+{
+  LOG_setup(line,fontsize,invert);
+    display.print(text);
+}
+void LOG(int line, int fontsize, bool invert, unsigned long number)
+{
+  LOG_setup(line,fontsize,invert);
+    display.println(number);
+    display.display();
+}
+void LOG(int line, int fontsize, bool invert, int number)
+{
+  LOG_setup(line,fontsize,invert);
+    display.println(number);
+    display.display();
+}
+void LOG(byte text)
+{
+    display.print(text);
+}
+void LOG()
+{
+    display.display();
 }
 void LOG_setup(int line, int fontsize, bool invert)
 {

@@ -35,7 +35,7 @@ byte vibrate = 0;
 
 
 const byte slaveAddress[5] = {'R','x','A','A','A'};
-const byte slaveAddress2[5] = {'R','x','A','A','A'};
+const byte slaveAddress2[5] = {'R','x','A','A','B'};
 
 RF24 radio(CE_PIN, CSN_PIN); // Create a Radio
 
@@ -53,6 +53,7 @@ struct MyData {
 MyData data;
 String stringToSend = "";
 char dataToSend[20] = "Message 0";
+char dataReceived[20] = "dsfsdf  ";
 int txNum = 0;
 
 
@@ -82,8 +83,9 @@ void setup() {
     radio.begin();
     radio.setDataRate( RF24_250KBPS );
     radio.setRetries(3,5); // delay, count
+    radio.openReadingPipe(1,slaveAddress2);
     radio.openWritingPipe(slaveAddress);
-    radio.openWritingPipe(slaveAddress2);
+    radio.startListening();
     
      DisplayInit();
      PlaystationControllerInit();
@@ -91,6 +93,7 @@ void setup() {
 }
 
 //====================
+bool newData = false;
 
 void loop() {
   
@@ -99,6 +102,35 @@ void loop() {
       ReadPlaystationController();
       cmdMessenger.feedinSerialData();
       prevMillis = millis();
+    }
+       getData();
+       if ( newData )
+       { 
+
+        byte id = dataReceived[0] ;
+        byte command = dataReceived[1] ;
+        byte parameter1 = dataReceived[2] ;
+       
+        SendControlCommand(11,command);
+        newData = false;
+        
+       }
+}
+
+
+
+void getData() {
+    if ( radio.available() ) 
+    {
+       Serial.print("Data received: ");
+        radio.read( &dataReceived, sizeof(dataReceived) );
+      Serial.print(dataReceived[0]);
+      Serial.print(dataReceived[1]);
+      Serial.print(dataReceived[2]);
+      Serial.println();
+        newData = true;
+ 
+      
     }
 }
 
@@ -117,6 +149,8 @@ bool stateRX = false;
 bool stateRY = false;
 bool stateDpadU = false;
 bool stateDpadD = false;
+bool stateButtonL1 = false;
+bool stateButtonR1 = false;
 
 void ReadPlaystationController()
 {
@@ -127,6 +161,51 @@ void ReadPlaystationController()
   bool DpadL = ps2x.Button(PSB_PAD_LEFT);
   bool DpadR = ps2x.Button(PSB_PAD_RIGHT);
   
+  bool ButtonX = ps2x.NewButtonState(PSB_CROSS);
+  bool ButtonO = ps2x.NewButtonState(PSB_CIRCLE);
+  bool ButtonS = ps2x.NewButtonState(PSB_SQUARE);
+  bool ButtonT = ps2x.NewButtonState(PSB_TRIANGLE);
+  bool ButtonL1 = ps2x.Button(PSB_L1);
+  bool ButtonL2 = ps2x.Button(PSB_L2);
+  bool ButtonR1 = ps2x.Button(PSB_R1);
+  bool ButtonR2 = ps2x.Button(PSB_R2);
+
+ if ( ButtonL1 )
+    {   
+      if ( !stateButtonL1 )
+      {
+        stateButtonL1 = true;
+      }
+    }
+    else
+    {
+      if ( stateButtonL1 )
+      {
+          stateButtonL1  = false;
+          MotorOut(1, 128);
+      }
+    }
+ 
+
+ if ( ButtonR1 )
+    {   
+      if ( !stateButtonR1 )
+      {
+        stateButtonR1 = true;
+      }
+    }
+    else
+    {
+      if ( stateButtonR1 )
+      {
+          MotorOut(2, 128);
+          stateButtonR1  = false;
+      }
+    }
+ 
+
+
+ 
       int LX = ps2x.Analog(PSS_LX) - 128;
       if ( abs(LX) > ANALOG_MOVEMENT_TOLERANCE && ( stateLX || ( (!stateLX && LX < 127) && (!stateLX && LX > -127) ) ) )
       { 
@@ -142,17 +221,24 @@ void ReadPlaystationController()
         }
       }
 
-      
+       
+       
+     
       int LY = -1 * ( ps2x.Analog(PSS_LY) - 128 );
       if ( abs(LY) > ANALOG_MOVEMENT_TOLERANCE && ( stateLY || ( (!stateLY && LY < 127) && (!stateLY && LY > -127) ) ) )
       {
         stateLY = true;
         SendControlCommand(2,LY);
+        if (stateButtonL1)
+        {
+          MotorOut(1,   ps2x.Analog(PSS_LY)  );
+        }
       }
        else
       {
         if ( stateLY )
         {
+          MotorOut(1, 128);
         SendControlCommand(2,0);
         stateLY = false;
         }
@@ -161,7 +247,7 @@ void ReadPlaystationController()
       int RX = ps2x.Analog(PSS_RX) - 128;
       if ( abs(RX) > ANALOG_MOVEMENT_TOLERANCE  && ( stateRX || ( (!stateRX && RX < 127) && (!stateRX && RX > -127) ) ) )
       { 
-        stateRX = true;
+          stateRX = true;
         SendControlCommand(3,RX);
       }
       else
@@ -179,27 +265,44 @@ void ReadPlaystationController()
       {
         stateRY = true;
         SendControlCommand(4,RY);
-      }
+        if (stateButtonR1)
+        {
+          MotorOut(2,   ps2x.Analog(PSS_RY)  );
+        }
+        }
        else
       {
         if ( stateRY )
         {
-        SendControlCommand(4,0);
+           MotorOut(2, 128);
+       SendControlCommand(4,0);
         stateRY = false;
         }
       }
 
 
-  bool ButtonX = ps2x.NewButtonState(PSB_CROSS);
-  bool ButtonO = ps2x.NewButtonState(PSB_CIRCLE);
-  bool ButtonS = ps2x.NewButtonState(PSB_SQUARE);
-  bool ButtonT = ps2x.NewButtonState(PSB_TRIANGLE);
-  bool ButtonL1 = ps2x.Button(PSB_L1);
-  bool ButtonL2 = ps2x.Button(PSB_L2);
-  bool ButtonR1 = ps2x.Button(PSB_R1);
-  bool ButtonR2 = ps2x.Button(PSB_R2);
 
+  if ( ButtonX )
+  {
+     MotorStep(1,1);
+  }
 
+  if ( ButtonT )
+  {
+     MotorStep(1,2);
+  }
+
+  if ( ButtonS )
+  {
+     MotorStep(2,1);
+  }
+
+  if ( ButtonO )
+  {
+     MotorStep(2,2);
+  }
+
+  
   if ( DpadU )
     {   
       if ( !stateDpadU )
@@ -238,20 +341,36 @@ void ReadPlaystationController()
 
 }
 
-void MotorOut(float motor, float speed)
+void MotorOut(long motor, int speed)
 {
-      dataToSend[0] = 1;
-      dataToSend[1] = motor;
-      dataToSend[2] = speed;
+      dataToSend[0] = motor;
+      dataToSend[1] = 2;
+      dataToSend[2] = speed ;
+      
+      //SetData(0, 2);
+      //SetData(1, 1);
+      //SetData(2, speed);
+      send(); 
+                delay(30);
+
+}
+
+
+void MotorStep(long motor, int direction)
+{
+      dataToSend[0] = motor;
+      dataToSend[1] = 1;
+      dataToSend[2] = direction ;
       send(); 
 }
-void MotorIn ()
-{
-    dataToSend[0] = 1;
-    dataToSend[1] = 1;
-    dataToSend[2] = LX;
-    send();    
-}
+void SetData(int address, long longInt )
+{   int addressOffset = 4 * address;          
+    dataToSend[addressOffset+0] = (int)((longInt >> 24) & 0xFF) ;
+    dataToSend[addressOffset+1] = (int)((longInt >> 16) & 0xFF) ;
+    dataToSend[addressOffset+2] = (int)((longInt >> 8) & 0XFF);
+    dataToSend[addressOffset+3] = (int)((longInt & 0XFF));
+}   
+
 void SendControlCommand(float bank, float value)
 {
         cmdMessenger.sendCmdStart(ControllerLeftAnalog);
@@ -304,7 +423,7 @@ void PlaystationControllerInit()
 //====================
 
 void send() {
-
+     radio.stopListening();
   //  stringToSend.toCharArray(dataToSend, 20 );
     bool rslt = radio.write( &dataToSend, sizeof(dataToSend) );
       
@@ -317,6 +436,7 @@ void send() {
     //  Serial.println("Acknowledge Failed");
      //  LOG(1,2,true,"Tx failed");
     }
+    radio.startListening();
 }
 
 

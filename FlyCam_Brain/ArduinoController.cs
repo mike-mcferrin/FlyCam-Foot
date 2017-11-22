@@ -41,7 +41,7 @@ namespace ArduinoController
 
             _serialTransport = new SerialTransport
             {
-                CurrentSerialSettings = { PortName = "COM6", BaudRate = 115200, DtrEnable = false } 
+                CurrentSerialSettings = { PortName = "COM16", BaudRate = 115200, DtrEnable = false } 
             };
 
             // Initialize the command messenger with the Serial Port transport layer
@@ -102,7 +102,7 @@ namespace ArduinoController
         {
             var arg1 = arguments.ReadFloatArg();
             var arg2 = arguments.ReadFloatArg();
-            //Console.WriteLine($">> {arg1} {arg2}");
+            Console.WriteLine($">> {arg1} {arg2}");
 
             EventArgs e = null;
             CallOut(this, arg1, arg2, e);
