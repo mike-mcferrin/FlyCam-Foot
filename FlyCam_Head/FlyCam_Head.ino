@@ -225,21 +225,30 @@ void ReadPlaystationController()
        
      
       int LY = -1 * ( ps2x.Analog(PSS_LY) - 128 );
-      if ( abs(LY) > ANALOG_MOVEMENT_TOLERANCE && ( stateLY || ( (!stateLY && LY < 127) && (!stateLY && LY > -127) ) ) )
+
+      if ( abs(LY) > ANALOG_MOVEMENT_TOLERANCE )   // && ( stateLY || ( (!stateLY && LY < 127) && (!stateLY && LY > -127) ) ) )
       {
         stateLY = true;
-        SendControlCommand(2,LY);
+     /**** IF FOOT_TYPE == MOTOR_CONTROL *****/
+     /* 
+       // SendControlCommand(2,LY);
         if (stateButtonL1)
         {
           MotorOut(1,   ps2x.Analog(PSS_LY)  );
         }
+     */
+     /**** IF FOOT_TYPE == SERVO ****/
+      
+           MotorOut(1,   ps2x.Analog(PSS_LY)  );
       }
        else
       {
         if ( stateLY )
         {
-          MotorOut(1, 128);
+           /**** IF FOOT_TYPE == MOTOR_CONTROL *****/
+          /*MotorOut(1, 128);
         SendControlCommand(2,0);
+        */
         stateLY = false;
         }
       }
@@ -265,17 +274,23 @@ void ReadPlaystationController()
       {
         stateRY = true;
         SendControlCommand(4,RY);
-        if (stateButtonR1)
+       /**** IF FOOT_TYPE == MOTOR_CONTROL *****/
+     /*    if (stateButtonR1)
         {
           MotorOut(2,   ps2x.Analog(PSS_RY)  );
         }
+        */
+        /**** IF FOOT_TYPE == SERVO ****/
         }
        else
       {
         if ( stateRY )
         {
+             /**** IF FOOT_TYPE == MOTOR_CONTROL *****/
+             /*
            MotorOut(2, 128);
        SendControlCommand(4,0);
+       */
         stateRY = false;
         }
       }

@@ -17,7 +17,7 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include "SkyKamExtras.h"
-
+#include <Servo.h>
 
 
 #define CE_PIN   9
@@ -70,10 +70,13 @@ struct config_t
 #define OLED_RESET 4
 Adafruit_SSD1306 display(OLED_RESET);
 
+Servo SERVO_1;
+
 void setup() {
 
       SettingsInit();
- 
+
+    SERVO_1.attach(5);
     Serial.begin(9600);
 
      Serial.println( settings.id );
@@ -89,11 +92,13 @@ void setup() {
       settings.id = 32;
     }
     LOG(1,2,false, String("ID: "), true );
+    delay(10);
     display.println( settings.id );
+    delay(10);
     display.display();
 //    LOG(8,1,false,"    SkyKam RX v1.5");
     Serial.println("SimpleRx Starting");
-    //delay(1000);
+    delay(1000);
     radio.begin();
     radio.setDataRate( RF24_250KBPS );
     radio.openReadingPipe(1, thisSlaveAddress);
@@ -111,8 +116,8 @@ void setup() {
 void SettingsInit()
 {
   
-  // WriteSettings(17,1200,100,9999999);
-      settings.id = 2;
+   WriteSettings(1,1200,100,9999999);
+      settings.id = 1;
       settings.positionCurrent = 0;
       settings.positionMinimum = 0;
       settings.positionMaximum = 0;
@@ -129,7 +134,7 @@ void SettingsInit()
 
 void loop() {
     getData();
-    pingHead();
+  //  pingHead();
     showData();
 }
 
@@ -157,7 +162,7 @@ void getData() {
      //  Serial.println("Data received 1");
        // MyData data;
         radio.read( &dataReceived, sizeof(dataReceived) );
-//        delay(10);
+        delay(10);
        // lastReceived = data;
         newData = true;
     }
@@ -172,7 +177,7 @@ long GetData(int address)
                    + ( dataReceived[addressOffset+3] ) ) ;
   return anotherLongInt;
 }
-
+         int speed;
 void showData() {
     if (newData == true) {
         Serial.print("Received: ");
@@ -224,8 +229,22 @@ void showData() {
               }
               break;
             case 2:
-              int speed;
-              speed = parameter1;
+     
+              if ( speed != parameter1 )
+              {
+                  speed = parameter1;
+                  
+                /* IF (FOOT_TYPE == SERVO) { */
+    
+                  SERVO_1.write(speed);
+              }
+
+            /* FOOT TYPE SERVO */
+   /*
+   if ( FOOT_TYPE == MOTOR_CONTROLLER )
+   {
+   speed = parameter1;
+
    //               LOG(3,1,false, "DRIVE MOTOR" );
     
               if ( speed == 128 )
@@ -250,13 +269,18 @@ void showData() {
                motorControl.SetSpeed( x );
               }
              // movement.Start();
-              break;
+             
+   }
+    break;
+   */
+
             case 5:
               movement =  Movement(220,80,false);
               movement.Start();
               break;
             
           }
+          
          
      //      LOG(5, 1, false ,  String(id));
     //       LOG(6, 1, false,   String(command)); 

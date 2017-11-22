@@ -58,7 +58,7 @@ bool PositionChanged( long newPosition )
       radio.stopListening();                                  // First, stop listening so we can talk.
 
       //****** THIS WAS 50 AND IT WORKED ******/
-      delay(10);
+      delay(50);
       
       if ( radio.write(&dataToSend,sizeof(dataToSend) ) )
       {                       
