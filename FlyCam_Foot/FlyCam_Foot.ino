@@ -84,11 +84,16 @@ void setup() {
     display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  
     display.clearDisplay();
     display.display();
-    LOG(3,1,true, "" );
-    LOG(4,4,true, "ID: " + String(settings.id) );
-    LOG(8,1,false,"    SkyKam RX v1.5");
+    if ( settings.id <= 0 )
+    {
+      settings.id = 32;
+    }
+    LOG(1,2,false, String("ID: "), true );
+    display.println( settings.id );
+    display.display();
+//    LOG(8,1,false,"    SkyKam RX v1.5");
     Serial.println("SimpleRx Starting");
-    delay(1000);
+    //delay(1000);
     radio.begin();
     radio.setDataRate( RF24_250KBPS );
     radio.openReadingPipe(1, thisSlaveAddress);
@@ -99,20 +104,21 @@ void setup() {
   motorControl = MotorControl();
   MotorControlInit();
   movement =  Movement(230,100,false);
-  delay(1000);
+  
+  //delay(1000);
 }
 
 void SettingsInit()
 {
-  /*
-   WriteSettings(2,1200,100,9999999);
-      settings.id = 0;
+  
+  // WriteSettings(17,1200,100,9999999);
+      settings.id = 2;
       settings.positionCurrent = 0;
       settings.positionMinimum = 0;
       settings.positionMaximum = 0;
   
-    ReadSettings();
-    */
+   // ReadSettings();
+    
 
 }
 
@@ -123,19 +129,35 @@ void SettingsInit()
 
 void loop() {
     getData();
+    pingHead();
     showData();
-   
 }
 
 //==============
 
+unsigned long counter = 0;
+
+void pingHead()
+{
+  
+  if ( PositionChanged( counter ) )
+  {
+    LOG(3,2,false, "Count:",true);
+    display.println(counter);
+    display.display();
+
+    
+    if ( ++counter == 128 )
+      counter = 0;
+  }
+}
 void getData() {
     if ( radio.available() ) 
     {
-       Serial.println("Data received 1");
+     //  Serial.println("Data received 1");
        // MyData data;
         radio.read( &dataReceived, sizeof(dataReceived) );
-        
+//        delay(10);
        // lastReceived = data;
         newData = true;
     }
@@ -160,7 +182,13 @@ void showData() {
        byte id = dataReceived[0] ;
        byte command = dataReceived[1] ;
        byte parameter1 = dataReceived[2] ;
-       
+
+
+       LOG(6,1,false, id );
+       LOG(7,1,false, command );
+       LOG(8,1,false, parameter1 );
+
+    
        //long command =  GetData(0) ;
        //long action = GetData(1) ;
        //long parameter1 = GetData(2)  ;
@@ -180,35 +208,35 @@ void showData() {
           switch( command )
           {
             case 1:
-                  LOG(3,1,false,"STEP MOTOR"  );
+    //              LOG(3,1,false,"STEP MOTOR"  );
             
               if ( parameter1 == 1 )
               {
                   movement =  Movement(230,35,true); // 0-255 ,30 min
                   movement.Start();
-                  LOG(4,1,false,"FORWARD"  );
+    //              LOG(4,1,false,"FORWARD"  );
               }
               if ( parameter1 == 2 )
               {
                   movement =  Movement(230,35,false);
                   movement.Start();
-                  LOG(4,1,false,"REVERSE"  );
+    //              LOG(4,1,false,"REVERSE"  );
               }
               break;
             case 2:
               int speed;
               speed = parameter1;
-                  LOG(3,1,false, "DRIVE MOTOR" );
+   //               LOG(3,1,false, "DRIVE MOTOR" );
     
               if ( speed == 128 )
               {
-                LOG(4,1,false,"STOP"  );
+      //          LOG(4,1,false,"STOP"  );
                 motorControl.Stop();
               }
               else if ( speed > 127 ) 
               {
                 int x = map( speed-127  , 0 , 128 , 00, 210 );
-                LOG(4,1,false, String("FORWARD")  );
+         //       LOG(4,1,false, String("FORWARD")  );
                 movement =  Movement( x , 30 , true);
                 motorControl.DirectionForward(); 
                 motorControl.SetSpeed( x );
@@ -216,7 +244,7 @@ void showData() {
               else
               {
                 int x = map( 127-speed , 0 , 128 ,00 , 210 );
-                LOG(4,1,false, String("REVERSE" )  );
+     //           LOG(4,1,false, String("REVERSE" )  );
               // movement =  Movement( x , 30 , false);
                motorControl.DirectionReverse();
                motorControl.SetSpeed( x );
@@ -230,9 +258,9 @@ void showData() {
             
           }
          
-           LOG(5, 1, false ,  String(id));
-           LOG(6, 1, false,   String(command)); 
-           LOG(7, 1, false,   String(parameter1));
+     //      LOG(5, 1, false ,  String(id));
+    //       LOG(6, 1, false,   String(command)); 
+   //       LOG(7, 1, false,   String(parameter1));
       }
         newData = false;
     }

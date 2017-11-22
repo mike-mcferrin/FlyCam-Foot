@@ -83,8 +83,9 @@ void setup() {
     radio.begin();
     radio.setDataRate( RF24_250KBPS );
     radio.setRetries(3,5); // delay, count
-    radio.openWritingPipe(slaveAddress);
     radio.openReadingPipe(1,slaveAddress2);
+    radio.openWritingPipe(slaveAddress);
+    radio.startListening();
     
      DisplayInit();
      PlaystationControllerInit();
@@ -121,9 +122,12 @@ void loop() {
 void getData() {
     if ( radio.available() ) 
     {
-       Serial.println("Data received 1");
+       Serial.print("Data received: ");
         radio.read( &dataReceived, sizeof(dataReceived) );
-
+      Serial.print(dataReceived[0]);
+      Serial.print(dataReceived[1]);
+      Serial.print(dataReceived[2]);
+      Serial.println();
         newData = true;
  
       
@@ -419,7 +423,7 @@ void PlaystationControllerInit()
 //====================
 
 void send() {
-
+     radio.stopListening();
   //  stringToSend.toCharArray(dataToSend, 20 );
     bool rslt = radio.write( &dataToSend, sizeof(dataToSend) );
       
@@ -432,6 +436,7 @@ void send() {
     //  Serial.println("Acknowledge Failed");
      //  LOG(1,2,true,"Tx failed");
     }
+    radio.startListening();
 }
 
 
