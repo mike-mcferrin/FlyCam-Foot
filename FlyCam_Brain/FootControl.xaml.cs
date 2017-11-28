@@ -44,12 +44,22 @@ namespace _6_ArduinoController
             }
         }
 
-        private void SetSliderValue(double newValue)
+        public FootControl SetSliderValue(double newValue, bool log = true)
         {
-            newValue = newValue < 0 ? 0 : newValue;
-            newValue = newValue > SliderBox.Height - 6 ? SliderBox.Height - 6 : newValue;
-            SliderValue.Height = newValue;
-            CallOut(this, 12, newValue, new EventArgs());
+            try
+            {
+                newValue = newValue < 0 ? 0 : newValue;
+                newValue = newValue > SliderBox.Height - 6 ? SliderBox.Height - 6 : newValue;
+                SliderValue.Height = newValue;
+                Counter = (int) newValue;
+                if (log )
+                    CallOut(this, 12, newValue, new EventArgs());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            return this;
         }
 
         public string Text
@@ -76,6 +86,17 @@ namespace _6_ArduinoController
 
             }
         }
+
+        public int Counter
+        {
+            get { return Int32.Parse( UIText_Status2.Content.ToString()); }
+            set
+            {
+                UIText_Status2.Content = value.ToString();
+            }
+        }
+
+        public int ID { get; set; }
 
     }
 }

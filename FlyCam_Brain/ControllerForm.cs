@@ -23,10 +23,10 @@ namespace ArduinoController
             SetupArduino();
             WPFControl1.Child = wpfControl;
 
-            FootControls.Add(new FootControl() { Text = "Foot D", Status = "Offline"});
-            FootControls.Add(new FootControl() { Text = "Foot C", Status = "Offline" });
-            FootControls.Add(new FootControl() { Text = "Foot B", Status = "Online" });
-            FootControls.Add(new FootControl() { Text = "Foot A", Status = "Offline" });
+            FootControls.Add(new FootControl() { ID = 4, Text = "Foot 4", Status = "Offline"});
+            FootControls.Add(new FootControl() { ID = 3, Text = "Foot 3", Status = "Offline" });
+            FootControls.Add(new FootControl() { ID = 2, Text = "Foot 2", Status = "Offline" });
+            FootControls.Add(new FootControl() { ID = 1, Text = "Foot 1", Status = "Offline" });
 
             foreach (var foot in FootControls)
             {
@@ -47,6 +47,11 @@ namespace ArduinoController
 
         }
 
+        private FootControl GetFootControl(int id)
+        {
+            return FootControls.Where(x => x.ID == id).FirstOrDefault();
+        }
+
         private void SetupArduino()
         {
             _arduinoController = new ArduinoController();
@@ -55,6 +60,10 @@ namespace ArduinoController
             _arduinoController.Log += (controller, text) =>
             {
                 listView2.Items.Insert(0, string.Format("LOG: {0}", text));
+
+                var id = int.Parse(text.Substring(text.IndexOf("a)") + 3, 3));
+                var value = int.Parse(text.Substring(text.IndexOf("c)") + 3));
+                GetFootControl(id)?.SetSliderValue((double)value,false);
             };
         }
         FootSelectionList wpfControl = new FootSelectionList();

@@ -18,7 +18,8 @@
                 </Rectangle.Effect>
             </Rectangle>
             <Label x:Name="UIText_Description" Content="Slider One" Height="30" Canvas.Top="238" Width="76" Foreground="#FFDCFF00" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontStretch="ExtraExpanded" FontWeight="Bold" Canvas.Left="-5"/>
-            <Label x:Name="UIText_Status" Content="Status" Height="24" Canvas.Top="261" Width="65" Foreground="#FF0068FF" FontStretch="ExtraExpanded" FontWeight="Bold" FontSize="10" Background="#FF660000" HorizontalContentAlignment="Center" VerticalAlignment="Top"/>
+            <Label x:Name="UIText_Status" Content="Status" Height="24" Canvas.Top="255" Width="65" Foreground="#FF0068FF" FontStretch="ExtraExpanded" FontWeight="Bold" FontSize="10" Background="{x:Null}" HorizontalContentAlignment="Center" VerticalAlignment="Top"/>
+            <Label x:Name="UIText_Status2" Content="0" Height="40" Canvas.Top="262" Width="76" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontStretch="ExtraExpanded" FontWeight="Thin" Canvas.Left="-5" FontSize="22"/>
 
             <Canvas.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">

@@ -149,10 +149,11 @@ void pingHead()
   {
    // if ( counter % 5 == 0 )
    // {
-    LOG(4,1,false, "",true );
+    LOG(3,1,counter %2 == 0, "",true );
  //  LOG(3,1,false, "Count:",true);
     display.println(counter);
     display.display();
+    delay(50);
   // }
     
     if ( ++counter == 128 )
@@ -183,32 +184,32 @@ long GetData(int address)
          int speed;
 void showData() {
     if (newData == true) {
-        Serial.print("Received: ");
+      //  Serial.print("Received: ");
       //  Serial.println(dataReceived);
-       Serial.print("Command: ");
+      // Serial.print("Command: ");
     
        byte id = dataReceived[0] ;
        byte command = dataReceived[1] ;
        byte parameter1 = dataReceived[2] ;
+/* 
 
-
-       LOG(6,1,false, id );
+      LOG(6,1,false, id );
        LOG(7,1,false, command );
        LOG(8,1,false, parameter1 );
-
+     */
     
        //long command =  GetData(0) ;
        //long action = GetData(1) ;
        //long parameter1 = GetData(2)  ;
     
-        Serial.print("Command: ");
+      /*  Serial.print("Command: ");
         Serial.print( id );
         Serial.print(" Action: ");
         Serial.print( command );
         Serial.print(" Parameter: ");
         Serial.print( parameter1 );
         Serial.println();
-    
+      */
       if ( String( id ) == String( settings.id ) )
       {
         
