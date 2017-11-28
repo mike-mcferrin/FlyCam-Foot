@@ -1,0 +1,4 @@
+C:\Users\smcferrin\Documents\Arduino\libraries\CmdMessenger\CSharp\CommandMessenger\bin\Debug\CommandMessenger.dll
+C:\Users\smcferrin\Documents\Arduino\libraries\CmdMessenger\CSharp\CommandMessenger\bin\Debug\CommandMessenger.pdb
+C:\Users\smcferrin\Documents\Arduino\libraries\CmdMessenger\CSharp\CommandMessenger\obj\Debug\CommandMessenger.dll
+C:\Users\smcferrin\Documents\Arduino\libraries\CmdMessenger\CSharp\CommandMessenger\obj\Debug\CommandMessenger.pdb

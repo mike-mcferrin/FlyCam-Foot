@@ -147,10 +147,10 @@ void pingHead()
   
   if ( PositionChanged( counter ) )
   {
-    LOG(3,2,false, "Count:",true);
+  /*  LOG(3,2,false, "Count:",true);
     display.println(counter);
     display.display();
-
+ */
     
     if ( ++counter == 128 )
       counter = 0;
