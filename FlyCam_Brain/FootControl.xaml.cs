@@ -33,21 +33,21 @@ namespace _6_ArduinoController
 
         private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            SetSliderValue(e.GetPosition(this).Y - 10);
+            SetSliderValue(e.GetPosition(this).Y - 12);
         }
 
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                SetSliderValue(e.GetPosition(this).Y - 10);
+                SetSliderValue(e.GetPosition(this).Y - 12);
             }
         }
 
         private void SetSliderValue(double newValue)
         {
             newValue = newValue < 0 ? 0 : newValue;
-            newValue = newValue > SliderBox.Height - 4 ? SliderBox.Height - 4 : newValue;
+            newValue = newValue > SliderBox.Height - 6 ? SliderBox.Height - 6 : newValue;
             SliderValue.Height = newValue;
             CallOut(this, 12, newValue, new EventArgs());
         }

@@ -7,8 +7,16 @@
              mc:Ignorable="d" Height="264.725" Width="68.382">
     <Grid HorizontalAlignment="Left" Width="85" Margin="0,0,-17,-48">
         <Canvas Height="303" VerticalAlignment="Top" MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" HorizontalAlignment="Left" Width="65">
-            <Rectangle x:Name="SliderBox" Canvas.Left="10" Canvas.Top="10" Height="234" Width="47" StrokeThickness="2" Stroke="Yellow" MouseDown="Rectangle_MouseDown"></Rectangle>
-            <Rectangle x:Name="SliderValue" Canvas.Left="12" Canvas.Top="12" Height="46" Width="43" StrokeThickness="1" Fill="Aqua" Stroke="Black"></Rectangle>
+            <Rectangle x:Name="SliderBox" Canvas.Left="10" Canvas.Top="8" Height="234" Width="47" StrokeThickness="2" Stroke="Yellow" MouseDown="Rectangle_MouseDown">
+                <Rectangle.Effect>
+                    <DropShadowEffect/>
+                </Rectangle.Effect>
+            </Rectangle>
+            <Rectangle x:Name="SliderValue" Canvas.Left="13" Canvas.Top="11" Height="42" Width="41" StrokeThickness="0" Fill="#FF01BAFF" Stroke="Black">
+                <Rectangle.Effect>
+                    <DropShadowEffect Direction="111" ShadowDepth="3" Color="#FF000676"/>
+                </Rectangle.Effect>
+            </Rectangle>
             <Label x:Name="UIText_Description" Content="Slider One" Height="30" Canvas.Top="238" Width="76" Foreground="#FFDCFF00" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontStretch="ExtraExpanded" FontWeight="Bold" Canvas.Left="-5"/>
             <Label x:Name="UIText_Status" Content="Status" Height="24" Canvas.Top="261" Width="65" Foreground="#FF0068FF" FontStretch="ExtraExpanded" FontWeight="Bold" FontSize="10" Background="#FF660000" HorizontalContentAlignment="Center" VerticalAlignment="Top"/>
 

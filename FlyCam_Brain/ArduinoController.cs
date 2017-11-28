@@ -41,7 +41,7 @@ namespace ArduinoController
 
             _serialTransport = new SerialTransport
             {
-                CurrentSerialSettings = { PortName = "COM16", BaudRate = 115200, DtrEnable = false } 
+                CurrentSerialSettings = { PortName = "COM17", BaudRate = 115200, DtrEnable = false } 
             };
 
             // Initialize the command messenger with the Serial Port transport layer
