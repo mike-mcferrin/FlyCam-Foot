@@ -122,10 +122,10 @@
             // WPFControl1
             // 
             this.WPFControl1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.WPFControl1.Location = new System.Drawing.Point(0, 342);
+            this.WPFControl1.Location = new System.Drawing.Point(0, 370);
             this.WPFControl1.Margin = new System.Windows.Forms.Padding(2);
             this.WPFControl1.Name = "WPFControl1";
-            this.WPFControl1.Size = new System.Drawing.Size(1238, 400);
+            this.WPFControl1.Size = new System.Drawing.Size(1629, 400);
             this.WPFControl1.TabIndex = 10;
             this.WPFControl1.Text = "elementHost1";
             this.WPFControl1.ChildChanged += new System.EventHandler<System.Windows.Forms.Integration.ChildChangedEventArgs>(this.elementHost1_ChildChanged);
@@ -134,16 +134,16 @@
             // PanelFootList
             // 
             this.PanelFootList.Dock = System.Windows.Forms.DockStyle.Right;
-            this.PanelFootList.Location = new System.Drawing.Point(877, 0);
+            this.PanelFootList.Location = new System.Drawing.Point(1268, 0);
             this.PanelFootList.Name = "PanelFootList";
-            this.PanelFootList.Size = new System.Drawing.Size(361, 342);
+            this.PanelFootList.Size = new System.Drawing.Size(361, 370);
             this.PanelFootList.TabIndex = 12;
             // 
             // ControllerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1238, 742);
+            this.ClientSize = new System.Drawing.Size(1629, 770);
             this.Controls.Add(this.PanelFootList);
             this.Controls.Add(this.WPFControl1);
             this.Controls.Add(this.listView2);

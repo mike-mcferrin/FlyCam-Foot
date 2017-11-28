@@ -134,7 +134,7 @@ void SettingsInit()
 
 void loop() {
     getData();
-  //  pingHead();
+    pingHead();
     showData();
 }
 

@@ -23,6 +23,10 @@ namespace ArduinoController
             _arduinoController = new ArduinoController();
             _arduinoController.Setup(this);
             _arduinoController.CallOut += _arduinoController_CallOut;
+            _arduinoController.Log += (controller, text) =>
+            {
+                listView2.Items.Insert(0, string.Format("LOG: {0}", text));
+            };
             WPFControl1.Child = wpfControl;
 
             FootControls.Add(new FootControl() { Text = "Foot D", Status = "Offline"});
@@ -37,7 +41,7 @@ namespace ArduinoController
                 {
                     var controlName = control.Text;
 
-                    listView2.Items.Insert(0,string.Format("control: {0} \n value: {1}", control.Text, value));
+                    listView2.Items.Insert(0,string.Format("FOOT control:{0} command:{2} value:{1}", control.Text, command, value));
                 };
                 
                 ElementHost H1 = new ElementHost();
@@ -54,7 +58,7 @@ namespace ArduinoController
         private void _arduinoController_CallOut(ArduinoController a, float b, float c, EventArgs e)
         {
             _arduinoController.SetLedFrequency(1, b, c);
-            listView2.Items.Insert(0, string.Format("control: {0} \n value: {1}", b, c));
+            listView2.Items.Insert(0, string.Format("AC control:{0} \n value:{1}", b, c));
             wpfControl.SetXY(b,c);
         }
 

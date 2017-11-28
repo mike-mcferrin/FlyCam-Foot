@@ -22,7 +22,8 @@ namespace ArduinoController
         kError,
         kSetLed, // Command to request led to be set in specific state
         ControllerLeftAnalogX,
-        ControllerLeftAnalogY
+        ControllerLeftAnalogY,
+        Log
     };
 
     public class ArduinoController
@@ -34,6 +35,8 @@ namespace ArduinoController
 
         public delegate void CallOutHandler(ArduinoController a, float b, float c, EventArgs e);
         public event CallOutHandler CallOut;
+        public delegate void LogHandler(ArduinoController a, String text);
+        public event LogHandler Log;
 
         public void Setup(ControllerForm controllerForm)
         {
@@ -77,6 +80,7 @@ namespace ArduinoController
         {
             _cmdMessenger.Attach((int)Command.ControllerLeftAnalogX, OnSerialReceivedFrequency);
             _cmdMessenger.Attach((int)Command.ControllerLeftAnalogY, OnSerialReceived_ControllerLeftAnalogY);
+            _cmdMessenger.Attach((int)Command.Log, OnSerialReceived_Log);
 
         }
         public void Exit()
@@ -119,6 +123,15 @@ namespace ArduinoController
 
         }
 
+        void OnSerialReceived_Log(ReceivedCommand arguments)
+        {
+            var arg1 = arguments.ReadStringArg();
+            //Console.WriteLine($"LOG >> {arg1}");
+            var d1 = arguments.ReadStringArg();
+            var d2 = arguments.ReadStringArg();
+            var d3 = arguments.ReadStringArg();
+            Log(this, arg1 + " 1)" + d1+ " 2)" + d2 + " 3)" + d3);
+        }
 
 
         #endregion

@@ -68,7 +68,8 @@ enum
   kError,
   kSetLed, 
   ControllerLeftAnalog,
-  ControllerRightAnalog
+  ControllerRightAnalog,
+  Log
 };
 
 //#define OLED_RESET 4
@@ -112,7 +113,15 @@ void loop() {
         byte parameter1 = dataReceived[2] ;
        
         SendControlCommand(11,command);
-        newData = false;
+    //   cmdMessenger.sendCmd( Log,     "Data->" + dataReceived[2]  );
+         newData = false;
+
+        cmdMessenger.sendCmdStart(Log);
+        cmdMessenger.sendCmdArg("Data->");
+        cmdMessenger.sendCmdArg(dataReceived[0]);
+        cmdMessenger.sendCmdArg(dataReceived[1]);
+        cmdMessenger.sendCmdArg(dataReceived[2]);
+        cmdMessenger.sendCmdEnd(); 
         
        }
 }
@@ -238,7 +247,7 @@ void ReadPlaystationController()
         }
      */
      /**** IF FOOT_TYPE == SERVO ****/
-      
+          SendControlCommand(2,LY);
            MotorOut(1,   ps2x.Analog(PSS_LY)  );
       }
        else
@@ -249,12 +258,13 @@ void ReadPlaystationController()
           /*MotorOut(1, 128);
         SendControlCommand(2,0);
         */
+         SendControlCommand(2,0);
         stateLY = false;
         }
       }
 
       int RX = ps2x.Analog(PSS_RX) - 128;
-      if ( abs(RX) > ANALOG_MOVEMENT_TOLERANCE  && ( stateRX || ( (!stateRX && RX < 127) && (!stateRX && RX > -127) ) ) )
+      if ( abs(RX) > ANALOG_MOVEMENT_TOLERANCE ) //  && ( stateRX || ( (!stateRX && RX < 127) && (!stateRX && RX > -127) ) ) )
       { 
           stateRX = true;
         SendControlCommand(3,RX);
@@ -270,7 +280,7 @@ void ReadPlaystationController()
 
       
       int RY = -1 * ( ps2x.Analog(PSS_RY) - 128 );
-      if ( abs(RY) > ANALOG_MOVEMENT_TOLERANCE && ( stateRY || ( (!stateRY && RY < 127) && (!stateRY && RY > -127) ) ) )
+      if ( abs(RY) > ANALOG_MOVEMENT_TOLERANCE ) // && ( stateRY || ( (!stateRY && RY < 127) && (!stateRY && RY > -127) ) ) )
       {
         stateRY = true;
         SendControlCommand(4,RY);
@@ -292,6 +302,7 @@ void ReadPlaystationController()
        SendControlCommand(4,0);
        */
         stateRY = false;
+         SendControlCommand(4,0);
         }
       }
 
@@ -300,21 +311,25 @@ void ReadPlaystationController()
   if ( ButtonX )
   {
      MotorStep(1,1);
+        cmdMessenger.sendCmd( Log,     "Cross");
   }
 
   if ( ButtonT )
   {
      MotorStep(1,2);
+        cmdMessenger.sendCmd( Log,     "Triangle");
   }
 
   if ( ButtonS )
   {
      MotorStep(2,1);
+        cmdMessenger.sendCmd( Log,     "Square");
   }
 
   if ( ButtonO )
   {
      MotorStep(2,2);
+        cmdMessenger.sendCmd( Log,     "Circle");
   }
 
   
@@ -394,6 +409,13 @@ void SendControlCommand(float bank, float value)
         cmdMessenger.sendCmdEnd(); 
 }
 
+void SendLogCommand(float bank, String value)
+{
+        cmdMessenger.sendCmdStart(ControllerLeftAnalog);
+        cmdMessenger.sendCmdArg(bank);
+        cmdMessenger.sendCmdArg(value );
+        cmdMessenger.sendCmdEnd(); 
+}
 
 void BrainInit()
 {
@@ -402,7 +424,9 @@ void BrainInit()
   //cmdMessenger.printLfCr();               // Adds newline to every command
     cmdMessenger.attach(  kSetLed,          OnRecievedSerial_Led);
     cmdMessenger.attach(  ControllerLeftAnalog, OnRecievedSerial_Frequency);
+//    cmdMessenger.attach(  Log, OnRecievedSerial_Log);
     cmdMessenger.sendCmd( kAcknowledge,     "Started");
+    cmdMessenger.sendCmd( Log,     "Started");
 }
   
   float ledFrequency   = 1.0; 
@@ -415,6 +439,7 @@ void BrainInit()
     messageReceived = true;
     cmdMessenger.sendCmd(kAcknowledge,ledFrequency);
   }
+
   
   void OnRecievedSerial_Led()
   {
