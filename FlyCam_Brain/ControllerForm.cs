@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Windows.Forms.Integration;
 using _6_ArduinoController;
 
 namespace ArduinoController
@@ -23,10 +24,32 @@ namespace ArduinoController
             _arduinoController.Setup(this);
             _arduinoController.CallOut += _arduinoController_CallOut;
             WPFControl1.Child = wpfControl;
-            WPFControl2.Child = wpfControl2;
+
+            FootControls.Add(new FootControl() { Text = "Foot D", Status = "Offline"});
+            FootControls.Add(new FootControl() { Text = "Foot C", Status = "Offline" });
+            FootControls.Add(new FootControl() { Text = "Foot B", Status = "Online" });
+            FootControls.Add(new FootControl() { Text = "Foot A", Status = "Offline" });
+
+            foreach (var foot in FootControls)
+            {
+                foot.Width = 60;
+                foot.CallOut += (control, command, value, args) =>
+                {
+                    var controlName = control.Text;
+                    MessageBox.Show(string.Format("control: {0} \n value: {1}", control.Text, value));
+                };
+                
+                ElementHost H1 = new ElementHost();
+                H1.Width = 70;
+                H1.Child = foot;
+                H1.Dock = DockStyle.Left;
+                PanelFootList.Controls.Add(H1);
+            }
+
         }
         FootSelectionList wpfControl = new FootSelectionList();
-        FootControl wpfControl2 = new FootControl();
+        List<FootControl> FootControls = new  List<FootControl>();
+      
         private void _arduinoController_CallOut(ArduinoController a, float b, float c, EventArgs e)
         {
             _arduinoController.SetLedFrequency(1, b, c);

@@ -18,7 +18,6 @@
         private void InitializeComponent()
         {
             this.LedFrequencyLabel = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.listView1 = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -29,7 +28,7 @@
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.WPFControl1 = new System.Windows.Forms.Integration.ElementHost();
-            this.WPFControl2 = new System.Windows.Forms.Integration.ElementHost();
+            this.PanelFootList = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
             // LedFrequencyLabel
@@ -42,21 +41,11 @@
             this.LedFrequencyLabel.TabIndex = 2;
             this.LedFrequencyLabel.Text = "Connections";
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(408, 66);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(100, 29);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "Settings";
-            // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(733, 66);
+            this.label2.Location = new System.Drawing.Point(324, 66);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(54, 29);
             this.label2.TabIndex = 7;
@@ -72,7 +61,7 @@
             this.listView1.GridLines = true;
             this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(37, 105);
-            this.listView1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.listView1.Margin = new System.Windows.Forms.Padding(2);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(285, 200);
@@ -105,8 +94,8 @@
             this.listView2.FullRowSelect = true;
             this.listView2.GridLines = true;
             this.listView2.HideSelection = false;
-            this.listView2.Location = new System.Drawing.Point(757, 105);
-            this.listView2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.listView2.Location = new System.Drawing.Point(348, 105);
+            this.listView2.Margin = new System.Windows.Forms.Padding(2);
             this.listView2.MultiSelect = false;
             this.listView2.Name = "listView2";
             this.listView2.Size = new System.Drawing.Size(285, 200);
@@ -134,7 +123,7 @@
             // 
             this.WPFControl1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.WPFControl1.Location = new System.Drawing.Point(0, 342);
-            this.WPFControl1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.WPFControl1.Margin = new System.Windows.Forms.Padding(2);
             this.WPFControl1.Name = "WPFControl1";
             this.WPFControl1.Size = new System.Drawing.Size(1238, 400);
             this.WPFControl1.TabIndex = 10;
@@ -142,28 +131,24 @@
             this.WPFControl1.ChildChanged += new System.EventHandler<System.Windows.Forms.Integration.ChildChangedEventArgs>(this.elementHost1_ChildChanged);
             this.WPFControl1.Child = null;
             // 
-            // WPFControl2
+            // PanelFootList
             // 
-            this.WPFControl2.Dock = System.Windows.Forms.DockStyle.Right;
-            this.WPFControl2.Location = new System.Drawing.Point(1046, 0);
-            this.WPFControl2.Margin = new System.Windows.Forms.Padding(2);
-            this.WPFControl2.Name = "WPFControl2";
-            this.WPFControl2.Size = new System.Drawing.Size(192, 342);
-            this.WPFControl2.TabIndex = 11;
-            this.WPFControl2.Text = "elementHost1";
-            this.WPFControl2.Child = null;
+            this.PanelFootList.Dock = System.Windows.Forms.DockStyle.Right;
+            this.PanelFootList.Location = new System.Drawing.Point(877, 0);
+            this.PanelFootList.Name = "PanelFootList";
+            this.PanelFootList.Size = new System.Drawing.Size(361, 342);
+            this.PanelFootList.TabIndex = 12;
             // 
             // ControllerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1238, 742);
-            this.Controls.Add(this.WPFControl2);
+            this.Controls.Add(this.PanelFootList);
             this.Controls.Add(this.WPFControl1);
             this.Controls.Add(this.listView2);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.LedFrequencyLabel);
             this.Name = "ControllerForm";
             this.Text = "Arduino Controller";
@@ -174,7 +159,6 @@
 
         #endregion
         private System.Windows.Forms.Label LedFrequencyLabel;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.ColumnHeader columnHeader1;
@@ -185,7 +169,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader5;
         private System.Windows.Forms.ColumnHeader columnHeader6;
         private System.Windows.Forms.Integration.ElementHost WPFControl1;
-        private System.Windows.Forms.Integration.ElementHost WPFControl2;
+        private System.Windows.Forms.Panel PanelFootList;
     }
 }
 

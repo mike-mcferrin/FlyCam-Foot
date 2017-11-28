@@ -24,14 +24,15 @@ namespace _6_ArduinoController
             InitializeComponent();
         }
 
+        public delegate void CallOutHandler(FootControl footControl, int command, double value, EventArgs e);
+        public event CallOutHandler CallOut;
+
         private void Rectangle_MouseDown(object sender, MouseButtonEventArgs e)
         {
-       //     MessageBox.Show(string.Format("Rectangle MouseDown Y:{0}", e.GetPosition(this).Y));
         }
 
         private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            //   MessageBox.Show(string.Format("Canvas MouseDown Y:{0}", e.GetPosition(this).Y));
             SetSliderValue(e.GetPosition(this).Y - 10);
         }
 
@@ -48,6 +49,33 @@ namespace _6_ArduinoController
             newValue = newValue < 0 ? 0 : newValue;
             newValue = newValue > SliderBox.Height - 4 ? SliderBox.Height - 4 : newValue;
             SliderValue.Height = newValue;
+            CallOut(this, 12, newValue, new EventArgs());
         }
+
+        public string Text
+        {
+            get { return UIText_Description.Content.ToString(); }
+            set { UIText_Description.Content = value; }
+        }
+
+        public string Status
+        {
+            get { return UIText_Status.Content.ToString();  }
+            set
+            {
+                UIText_Status.Content = value;
+                if (value.ToLower() == "online")
+                {
+                    UIText_Status.Foreground = Brushes.White;
+                }
+                else
+                {
+                    UIText_Status.Foreground = Brushes.Black;
+
+                }
+
+            }
+        }
+
     }
 }
