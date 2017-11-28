@@ -21,3 +21,5 @@ C:\Users\smcferrin\Documents\Arduino\my sketches\WIreless_Test_Receiver_REPOSITO
 C:\Users\smcferrin\Documents\Arduino\my sketches\WIreless_Test_Receiver_REPOSITORY\FlyCam_Brain\bin\Debug\CommandMessenger.dll
 C:\Users\smcferrin\Documents\Arduino\my sketches\WIreless_Test_Receiver_REPOSITORY\FlyCam_Brain\obj\x86\Debug\FootSelectionList.baml
 C:\Users\smcferrin\Documents\Arduino\my sketches\WIreless_Test_Receiver_REPOSITORY\FlyCam_Brain\obj\x86\Debug\6-ArduinoController.g.resources
+C:\Users\smcferrin\Documents\Arduino\my sketches\WIreless_Test_Receiver_REPOSITORY\FlyCam_Brain\obj\x86\Debug\FootControl.g.cs
+C:\Users\smcferrin\Documents\Arduino\my sketches\WIreless_Test_Receiver_REPOSITORY\FlyCam_Brain\obj\x86\Debug\FootControl.baml

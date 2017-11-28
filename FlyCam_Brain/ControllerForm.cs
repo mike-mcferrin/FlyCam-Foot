@@ -23,11 +23,12 @@ namespace ArduinoController
             _arduinoController.Setup(this);
             _arduinoController.CallOut += _arduinoController_CallOut;
             WPFControl1.Child = wpfControl;
+            WPFControl2.Child = wpfControl2;
         }
         FootSelectionList wpfControl = new FootSelectionList();
+        FootControl wpfControl2 = new FootControl();
         private void _arduinoController_CallOut(ArduinoController a, float b, float c, EventArgs e)
         {
-
             _arduinoController.SetLedFrequency(1, b, c);
             wpfControl.SetXY(b,c);
         }

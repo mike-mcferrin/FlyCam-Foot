@@ -63,6 +63,9 @@
       <DependentUpon>ControllerForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ArduinoController.cs" />
+    <Compile Include="FootControl.xaml.cs">
+      <DependentUpon>FootControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FootSelectionList.xaml.cs">
       <DependentUpon>FootSelectionList.xaml</DependentUpon>
     </Compile>
@@ -91,6 +94,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="FootControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="FootSelectionList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

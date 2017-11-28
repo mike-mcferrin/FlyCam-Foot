@@ -39,6 +39,17 @@ namespace _6_ArduinoController
         private float currentX2 = 128;
         private float currentY2 = 128;
 
+
+        /***** SetXY Usage *******************
+         *   A   Value
+         *  --- -----------------------------
+         *   1   Sets X value for Left XY Graph
+         *   2   Sets Y value for Left XY Graph
+         *   3   Sets X value for Right XY Graph
+         *   4   Sets Y value for Right XY Graph
+         *   6   (-) value => Selects previous menu item in [Mode List]
+         *   6   (+) value => Selects next menu item in [Mode List]
+        **************************************/
         public void SetXY(float a, float val)
         {
             switch (a)
