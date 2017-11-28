@@ -39,7 +39,7 @@ void wheelSpeed()
 
 unsigned long currentMillis;
 unsigned long prevMillis = 0;
-unsigned long txIntervalMillis = 320; // send once per second
+unsigned long txIntervalMillis = 5250; // send once per second
 
 
 bool PositionChanged( long newPosition )

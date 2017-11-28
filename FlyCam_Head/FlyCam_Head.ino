@@ -17,7 +17,7 @@
 
     
 
-#define ANALOG_MOVEMENT_TOLERANCE 4
+#define ANALOG_MOVEMENT_TOLERANCE 1
 
 #define CE_PIN   9
 #define CSN_PIN 10
@@ -108,9 +108,9 @@ void loop() {
        if ( newData )
        { 
 
-        byte id = dataReceived[0] ;
-        byte command = dataReceived[1] ;
-        byte parameter1 = dataReceived[2] ;
+        unsigned long id = dataReceived[0] ;
+        unsigned long command = dataReceived[1] ;
+        unsigned long parameter1 = dataReceived[2] ;
        
         SendControlCommand(11,command);
     //   cmdMessenger.sendCmd( Log,     "Data->" + dataReceived[2]  );
@@ -118,9 +118,9 @@ void loop() {
 
         cmdMessenger.sendCmdStart(Log);
         cmdMessenger.sendCmdArg("Data->");
-        cmdMessenger.sendCmdArg(dataReceived[0]);
-        cmdMessenger.sendCmdArg(dataReceived[1]);
-        cmdMessenger.sendCmdArg(dataReceived[2]);
+        cmdMessenger.sendCmdArg(id);
+        cmdMessenger.sendCmdArg(command);
+        cmdMessenger.sendCmdArg(parameter1);
         cmdMessenger.sendCmdEnd(); 
         
        }
@@ -381,7 +381,7 @@ void MotorOut(long motor, int speed)
       //SetData(1, 1);
       //SetData(2, speed);
       send(); 
-                delay(30);
+      delay(50);
 
 }
 

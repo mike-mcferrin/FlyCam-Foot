@@ -13,12 +13,14 @@ void LOG(int line, int fontsize, bool invert, char* text)
   LOG_setup(line,fontsize,invert);
   display.println(text);
   display.display();
+    delay(20);
 }
 void LOG(int line, int fontsize, bool invert, char text , bool IsCharArray)
 {
   LOG_setup(line,fontsize,invert);
   display.println(text);
   display.display();
+    delay(20);
 }
 void LOG(int line, int fontsize, bool invert, String text)
 {
@@ -27,37 +29,44 @@ void LOG(int line, int fontsize, bool invert, String text)
   {
     display.println(text);
     display.display();
+    delay(20);
   }
 }
 void LOG(int line, int fontsize, bool invert, String text, bool stayOnLine)
 {
   LOG_setup(line,fontsize,invert);
     display.print(text);
+    delay(20);
 }
 void LOG(int line, int fontsize, bool invert, unsigned long number)
 {
   LOG_setup(line,fontsize,invert);
     display.println(number);
     display.display();
+    delay(20);
 }
 void LOG(int line, int fontsize, bool invert, int number)
 {
   LOG_setup(line,fontsize,invert);
     display.println(number);
     display.display();
+    delay(20);
 }
 void LOG(byte text)
 {
     display.print(text);
+    delay(20);
 }
 void LOG()
 {
     display.display();
+    delay(20);
 }
 void LOG_setup(int line, int fontsize, bool invert)
 {
-   display.setTextSize(fontsize);
-  display.setCursor(xOffset, yOffset + ( line - 1 ) *  ( textHeight  ));
+ display.setTextSize(fontsize);
+ delay(20);
+ display.setCursor(xOffset, yOffset + ( line - 1 ) *  ( textHeight  ));
   if (invert)
   {   display.fillRect(0, yOffset + ( line - 1 )* ( textHeight ), display.width(), ( textHeight * fontsize ), WHITE);
       display.setTextColor(BLACK);
@@ -66,6 +75,7 @@ void LOG_setup(int line, int fontsize, bool invert)
       display.fillRect(0, yOffset + ( line - 1 )* ( textHeight  ), display.width(), ( textHeight * fontsize ), BLACK);
       display.setTextColor(WHITE);
   }
+    delay(20);
 }
 
 

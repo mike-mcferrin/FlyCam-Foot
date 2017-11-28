@@ -127,10 +127,10 @@ namespace ArduinoController
         {
             var arg1 = arguments.ReadStringArg();
             //Console.WriteLine($"LOG >> {arg1}");
-            var d1 = arguments.ReadStringArg();
-            var d2 = arguments.ReadStringArg();
-            var d3 = arguments.ReadStringArg();
-            Log(this, arg1 + " 1)" + d1+ " 2)" + d2 + " 3)" + d3);
+            var d1 = arguments.ReadDoubleArg();
+            var d2 = arguments.ReadDoubleArg();
+            var d3 = arguments.ReadDoubleArg();
+            Log(this, arg1 + "::  a) " + d1+ "  b) " + d2 + "  c) " + d3);
         }
 
 

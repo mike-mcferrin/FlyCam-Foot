@@ -86,19 +86,19 @@ void setup() {
     
     display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  
     display.clearDisplay();
-    display.display();
+    delay(50);
+     display.display();
     if ( settings.id <= 0 )
     {
       settings.id = 32;
     }
+    delay(250);
     LOG(1,2,false, String("ID: "), true );
-    delay(10);
-    display.println( settings.id );
-    delay(10);
+    display.print( settings.id );
     display.display();
+    delay(50);
 //    LOG(8,1,false,"    SkyKam RX v1.5");
     Serial.println("SimpleRx Starting");
-    delay(1000);
     radio.begin();
     radio.setDataRate( RF24_250KBPS );
     radio.openReadingPipe(1, thisSlaveAddress);
@@ -147,10 +147,13 @@ void pingHead()
   
   if ( PositionChanged( counter ) )
   {
-  /*  LOG(3,2,false, "Count:",true);
+   // if ( counter % 5 == 0 )
+   // {
+    LOG(4,1,false, "",true );
+ //  LOG(3,1,false, "Count:",true);
     display.println(counter);
     display.display();
- */
+  // }
     
     if ( ++counter == 128 )
       counter = 0;
@@ -162,7 +165,7 @@ void getData() {
      //  Serial.println("Data received 1");
        // MyData data;
         radio.read( &dataReceived, sizeof(dataReceived) );
-        delay(10);
+        delay(20);
        // lastReceived = data;
         newData = true;
     }
@@ -235,7 +238,7 @@ void showData() {
                   speed = parameter1;
                   
                 /* IF (FOOT_TYPE == SERVO) { */
-    
+        Serial.println("SERVO WRITE");
                   SERVO_1.write(speed);
               }
 

@@ -14,19 +14,13 @@ namespace ArduinoController
 {
     public partial class ControllerForm : Form
     {
-        private readonly ArduinoController _arduinoController;
+        private ArduinoController _arduinoController;
         private double _ledFrequency;
 
         public ControllerForm()
         {
             InitializeComponent();
-            _arduinoController = new ArduinoController();
-            _arduinoController.Setup(this);
-            _arduinoController.CallOut += _arduinoController_CallOut;
-            _arduinoController.Log += (controller, text) =>
-            {
-                listView2.Items.Insert(0, string.Format("LOG: {0}", text));
-            };
+            SetupArduino();
             WPFControl1.Child = wpfControl;
 
             FootControls.Add(new FootControl() { Text = "Foot D", Status = "Offline"});
@@ -51,6 +45,17 @@ namespace ArduinoController
                 PanelFootList.Controls.Add(H1);
             }
 
+        }
+
+        private void SetupArduino()
+        {
+            _arduinoController = new ArduinoController();
+            _arduinoController.Setup(this);
+            _arduinoController.CallOut += _arduinoController_CallOut;
+            _arduinoController.Log += (controller, text) =>
+            {
+                listView2.Items.Insert(0, string.Format("LOG: {0}", text));
+            };
         }
         FootSelectionList wpfControl = new FootSelectionList();
         List<FootControl> FootControls = new  List<FootControl>();
@@ -113,6 +118,10 @@ namespace ArduinoController
            
         }
 
-
+        private void btn_ReConnect_Serial_Click(object sender, EventArgs e)
+        {
+            _arduinoController.Exit();
+            SetupArduino();
+        }
     }
 }
