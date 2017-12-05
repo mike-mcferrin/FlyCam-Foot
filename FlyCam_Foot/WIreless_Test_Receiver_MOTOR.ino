@@ -41,7 +41,10 @@ void wheelSpeed()
 unsigned long currentMillis;
 unsigned long prevMillis = 0;
 
-
+void ResetCurrentMillis()
+{
+  currentMillis = 0;
+}
 bool PositionChanged( long newPosition )
 {
     if (currentMillis++ >= txIntervalMillis )

@@ -106,16 +106,13 @@ void setup() {
 
     SETTING_LOG_LEVEL = LOG_LEVEL_ALL;
     
-    delay(250);
     display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  
-    delay(250);
     display.clearDisplay();
-    delay(250);
-
+   
     SetID( MY_ID );
+    SetMODE( SETTING_MODE );    
     
-    delay(250);
-
+   
 
  //   LOG(8,1,false,"    SkyKam RX v1.5");
     Serial.println("SimpleRx Starting");
@@ -136,7 +133,8 @@ void setup() {
 }
 
 void SettingsInit()
-{
+{    
+      SETTING_MODE = MODE_PING;
       settings.id = MY_ID;
       settings.positionCurrent = 0;
       settings.positionMinimum = 0;
@@ -147,7 +145,15 @@ void SetID( int id )
 {
     settings.id = id;
     LOG(1,1,2,false, "ID:" );
-    LOG(1,6,2,false, id);
+    LOG(1,5,2,false, id);
+}
+
+void SetMODE( int mode )
+{
+    bool highlightMode = false;
+      SETTING_MODE  = mode ;
+      LOG(1,18,1,false, "M:");   
+      LOG(1,21,1,highlightMode , mode);   
 }
 
 
@@ -172,7 +178,8 @@ void pingHead()
   
   if ( PositionChanged( counter ) )
   {
-    LOG(3,1,1,counter %2 == 0, counter);
+    LOG(2,18,1,false, "C:");
+    LOG(2,21,1,counter %2 == 0, counter);
     if ( ++counter >= 255 )
       counter = 0;
   }
@@ -246,7 +253,7 @@ void showData() {
             case 101:
                   Serial.print("Set Mode: ");
                   Serial.println( parameter1 );
-                  SETTING_MODE  = parameter1 ;
+                  SetMODE( parameter1 );
                   break;
         
             case 102:
@@ -263,6 +270,7 @@ void showData() {
 
              case 104:
                   counter = parameter1;
+                  ResetCurrentMillis();
                   break;
                   
             case 1:
