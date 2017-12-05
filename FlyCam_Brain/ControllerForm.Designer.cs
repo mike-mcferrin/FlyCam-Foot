@@ -81,7 +81,7 @@
             this.WPFControl1.Location = new System.Drawing.Point(0, 327);
             this.WPFControl1.Margin = new System.Windows.Forms.Padding(2);
             this.WPFControl1.Name = "WPFControl1";
-            this.WPFControl1.Size = new System.Drawing.Size(1629, 400);
+            this.WPFControl1.Size = new System.Drawing.Size(1252, 400);
             this.WPFControl1.TabIndex = 10;
             this.WPFControl1.Text = "elementHost1";
             this.WPFControl1.ChildChanged += new System.EventHandler<System.Windows.Forms.Integration.ChildChangedEventArgs>(this.elementHost1_ChildChanged);
@@ -89,19 +89,23 @@
             // 
             // PanelFootList
             // 
+            this.PanelFootList.AutoScroll = true;
+            this.PanelFootList.BackColor = System.Drawing.SystemColors.ControlDark;
             this.PanelFootList.Dock = System.Windows.Forms.DockStyle.Right;
-            this.PanelFootList.Location = new System.Drawing.Point(1268, 0);
+            this.PanelFootList.Location = new System.Drawing.Point(1252, 0);
             this.PanelFootList.Name = "PanelFootList";
-            this.PanelFootList.Size = new System.Drawing.Size(361, 327);
+            this.PanelFootList.Size = new System.Drawing.Size(280, 727);
             this.PanelFootList.TabIndex = 12;
+            this.PanelFootList.Paint += new System.Windows.Forms.PaintEventHandler(this.PanelFootList_Paint);
             // 
             // btn_ReConnect_Serial
             // 
-            this.btn_ReConnect_Serial.Location = new System.Drawing.Point(442, 13);
+            this.btn_ReConnect_Serial.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_ReConnect_Serial.Location = new System.Drawing.Point(943, 9);
             this.btn_ReConnect_Serial.Name = "btn_ReConnect_Serial";
-            this.btn_ReConnect_Serial.Size = new System.Drawing.Size(75, 23);
+            this.btn_ReConnect_Serial.Size = new System.Drawing.Size(296, 44);
             this.btn_ReConnect_Serial.TabIndex = 13;
-            this.btn_ReConnect_Serial.Text = "Reconnect";
+            this.btn_ReConnect_Serial.Text = "Reconnect Serial";
             this.btn_ReConnect_Serial.UseVisualStyleBackColor = true;
             this.btn_ReConnect_Serial.Click += new System.EventHandler(this.btn_ReConnect_Serial_Click);
             // 
@@ -109,14 +113,15 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1629, 727);
+            this.ClientSize = new System.Drawing.Size(1532, 727);
             this.Controls.Add(this.btn_ReConnect_Serial);
-            this.Controls.Add(this.PanelFootList);
             this.Controls.Add(this.WPFControl1);
+            this.Controls.Add(this.PanelFootList);
             this.Controls.Add(this.listView2);
             this.Controls.Add(this.label2);
             this.Name = "ControllerForm";
             this.Text = "Arduino Controller";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -36,11 +36,11 @@ struct MyData {
   String status;
   int intArray[2];
   float floatArray[2];
-  byte dataReceived[20];
+  byte dataReceived[7];
 };
 
 MyData lastReceived;
-byte dataReceived[20]; // this must match dataToSend in the TX
+byte dataReceived[7]; // this must match dataToSend in the TX
 bool newData = false;
 
 //===========
@@ -55,7 +55,7 @@ Movement movement;
 
 /*******/
 
-char dataToSend[20] = "Message 0";
+char dataToSend[7] = "       ";
 
 /**** EEPROM*****/
 struct config_t
@@ -116,8 +116,8 @@ void setup() {
 void SettingsInit()
 {
   
-   WriteSettings(1,1200,100,9999999);
-      settings.id = 1;
+   WriteSettings(3,1200,100,9999999);
+      settings.id = 3;
       settings.positionCurrent = 0;
       settings.positionMinimum = 0;
       settings.positionMaximum = 0;
@@ -131,10 +131,12 @@ void SettingsInit()
 
 
 //=============
+bool PingActive = true;
 
 void loop() {
     getData();
-    pingHead();
+    if ( PingActive )
+      pingHead();
     showData();
 }
 
@@ -191,6 +193,7 @@ void showData() {
        byte id = dataReceived[0] ;
        byte command = dataReceived[1] ;
        byte parameter1 = dataReceived[2] ;
+       long parameter2 = GetData(3);
 /* 
 
       LOG(6,1,false, id );
@@ -202,20 +205,35 @@ void showData() {
        //long action = GetData(1) ;
        //long parameter1 = GetData(2)  ;
     
-      /*  Serial.print("Command: ");
+        Serial.print("Command: ");
         Serial.print( id );
         Serial.print(" Action: ");
         Serial.print( command );
         Serial.print(" Parameter: ");
         Serial.print( parameter1 );
+        Serial.print(" Parameter2: ");
+        Serial.print( parameter2 );
         Serial.println();
-      */
+      
       if ( String( id ) == String( settings.id ) )
       {
         
           
           switch( command )
           {
+            case 100:
+
+              switch( parameter1 )
+              {
+                case 1:
+                    PingActive = true;
+                    break;
+                default:
+                    PingActive = false;
+                   break;                
+              }
+
+              break;
             case 1:
     //              LOG(3,1,false,"STEP MOTOR"  );
             

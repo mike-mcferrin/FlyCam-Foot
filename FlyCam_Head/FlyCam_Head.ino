@@ -52,8 +52,8 @@ struct MyData {
 
 MyData data;
 String stringToSend = "";
-char dataToSend[20] = "Message 0";
-char dataReceived[20] = "dsfsdf  ";
+char dataToSend[7] = "Message";
+char dataReceived[7] = "Message";
 int txNum = 0;
 
 
@@ -69,7 +69,8 @@ enum
   kSetLed, 
   ControllerLeftAnalog,
   ControllerRightAnalog,
-  Log
+  Log,
+  DirectMessage
 };
 
 //#define OLED_RESET 4
@@ -108,9 +109,10 @@ void loop() {
        if ( newData )
        { 
 
-        unsigned long id = dataReceived[0] ;
-        unsigned long command = dataReceived[1] ;
-        unsigned long parameter1 = dataReceived[2] ;
+        unsigned int id = dataReceived[0] ;
+        unsigned int command = dataReceived[1] ;
+        unsigned int parameter1 = dataReceived[2] ;
+        unsigned long parameter2 = GetData(3) ;
        
         SendControlCommand(11,command);
     //   cmdMessenger.sendCmd( Log,     "Data->" + dataReceived[2]  );
@@ -121,12 +123,22 @@ void loop() {
         cmdMessenger.sendCmdArg(id);
         cmdMessenger.sendCmdArg(command);
         cmdMessenger.sendCmdArg(parameter1);
+        cmdMessenger.sendCmdArg(parameter2);
         cmdMessenger.sendCmdEnd(); 
         
        }
 }
 
 
+long GetData(int address)
+{  int addressOffset = 4 * address; 
+  long anotherLongInt;
+  anotherLongInt = ( ( dataReceived[addressOffset+0] << 24) 
+                   + ( dataReceived[addressOffset+1] << 16) 
+                   + ( dataReceived[addressOffset+2] << 8) 
+                   + ( dataReceived[addressOffset+3] ) ) ;
+  return anotherLongInt;
+}
 
 void getData() {
     if ( radio.available() ) 
@@ -376,6 +388,7 @@ void MotorOut(long motor, int speed)
       dataToSend[0] = motor;
       dataToSend[1] = 2;
       dataToSend[2] = speed ;
+      SetData(3, 123456789);
       
       //SetData(0, 2);
       //SetData(1, 1);
@@ -391,6 +404,8 @@ void MotorStep(long motor, int direction)
       dataToSend[0] = motor;
       dataToSend[1] = 1;
       dataToSend[2] = direction ;
+     SetData(3, 123456789);
+      
       send(); 
 }
 void SetData(int address, long longInt )
@@ -424,6 +439,7 @@ void BrainInit()
   //cmdMessenger.printLfCr();               // Adds newline to every command
     cmdMessenger.attach(  kSetLed,          OnRecievedSerial_Led);
     cmdMessenger.attach(  ControllerLeftAnalog, OnRecievedSerial_Frequency);
+    cmdMessenger.attach(  DirectMessage, OnReceivedDirectMessage );
 //    cmdMessenger.attach(  Log, OnRecievedSerial_Log);
     cmdMessenger.sendCmd( kAcknowledge,     "Started");
     cmdMessenger.sendCmd( Log,     "Started");
@@ -431,7 +447,17 @@ void BrainInit()
   
   float ledFrequency   = 1.0; 
   bool messageReceived = false;
-  
+
+  void OnReceivedDirectMessage()
+  {
+      
+      dataToSend[0] = cmdMessenger.readInt16Arg();  
+      dataToSend[1] = cmdMessenger.readInt16Arg(); 
+      dataToSend[2] = cmdMessenger.readInt16Arg();   
+      SetData(3,  cmdMessenger.readDoubleArg());
+      
+      send(); 
+  }
   void OnRecievedSerial_Frequency()
   {
     // Read led state argument, interpret string as boolean
@@ -464,7 +490,7 @@ void PlaystationControllerInit()
 
 void send() {
      radio.stopListening();
-  //  stringToSend.toCharArray(dataToSend, 20 );
+  //  stringToSend.toCharArray(dataToSend, 7 );
     bool rslt = radio.write( &dataToSend, sizeof(dataToSend) );
       
     if (rslt) 

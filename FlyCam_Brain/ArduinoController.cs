@@ -23,7 +23,8 @@ namespace ArduinoController
         kSetLed, // Command to request led to be set in specific state
         ControllerLeftAnalogX,
         ControllerLeftAnalogY,
-        Log
+        Log,
+        DirectMessage
     };
 
     public class ArduinoController
@@ -33,7 +34,7 @@ namespace ArduinoController
         private CmdMessenger      _cmdMessenger;
         private ControllerForm    _controllerForm;
 
-        public delegate void CallOutHandler(ArduinoController a, float b, float c, EventArgs e);
+        public delegate void CallOutHandler(ArduinoController arduino, int a, int b, int c,  double d, EventArgs e);
         public event CallOutHandler CallOut;
         public delegate void LogHandler(ArduinoController a, String text);
         public event LogHandler Log;
@@ -109,7 +110,7 @@ namespace ArduinoController
             Console.WriteLine($">> {arg1} {arg2}");
 
             EventArgs e = null;
-            CallOut(this, arg1, arg2, e);
+            CallOut(this, (int) arg1, (int) arg2, 0,0, e);
 
         }
 
@@ -127,10 +128,11 @@ namespace ArduinoController
         {
             var arg1 = arguments.ReadStringArg();
             //Console.WriteLine($"LOG >> {arg1}");
-            var d1 = arguments.ReadDoubleArg();
-            var d2 = arguments.ReadDoubleArg();
-            var d3 = arguments.ReadDoubleArg();
-            Log(this, arg1 + "::  a) " + d1+ "  b) " + d2 + "  c) " + d3);
+            var d1 = arguments.ReadInt16Arg();
+            var d2 = arguments.ReadInt16Arg();
+            var d3 = arguments.ReadInt16Arg();
+            var d4 = arguments.ReadDoubleArg();
+            Log(this, arg1 + "::  a) " + d1+ "  b) " + d2 + "  c) " + d3 + " d) " + d4 );
         }
 
 
@@ -170,6 +172,19 @@ namespace ArduinoController
             // 
             // This will make sure that when the slider raises a lot of events that each send a new blink frequency, the 
             // embedded controller will not start lagging.
+            _cmdMessenger.QueueCommand(new CollapseCommandStrategy(command));
+        }
+
+        public void SendDirectMessage(int a, int b, int c, double d)
+        {
+           // CallOut(this, a, b,c, d, new EventArgs());
+
+            var command = new SendCommand((int)Command.DirectMessage);
+            command.AddArgument(a);
+            command.AddArgument(b);
+            command.AddArgument(c);
+            command.AddArgument(d);
+
             _cmdMessenger.QueueCommand(new CollapseCommandStrategy(command));
         }
 

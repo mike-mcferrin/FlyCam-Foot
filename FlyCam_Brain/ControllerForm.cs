@@ -23,7 +23,7 @@ namespace ArduinoController
             SetupArduino();
             WPFControl1.Child = wpfControl;
 
-            FootControls.Add(new FootControl() { ID = 4, Text = "Foot 4", Status = "Offline"});
+            FootControls.Add(new FootControl() { ID = 4, Text = "Foot 4", Status = "Offline" });
             FootControls.Add(new FootControl() { ID = 3, Text = "Foot 3", Status = "Offline" });
             FootControls.Add(new FootControl() { ID = 2, Text = "Foot 2", Status = "Offline" });
             FootControls.Add(new FootControl() { ID = 1, Text = "Foot 1", Status = "Offline" });
@@ -31,17 +31,20 @@ namespace ArduinoController
             foreach (var foot in FootControls)
             {
                 foot.Width = 60;
-                foot.CallOut += (control, command, value, args) =>
+                foot.CallOut += (control, command, sub, value, value2, args) =>
                 {
                     var controlName = control.Text;
-
+                    _arduinoController.SendDirectMessage(command, sub, value, value2);
                     listView2.Items.Insert(0,string.Format("FOOT control:{0} command:{2} value:{1}", control.Text, command, value));
                 };
                 
                 ElementHost H1 = new ElementHost();
-                H1.Width = 70;
+                H1.Width = 320;
+                H1.Height = 300;
                 H1.Child = foot;
-                H1.Dock = DockStyle.Left;
+                H1.Dock = foot.ID <= 10 ? DockStyle.Top : DockStyle.Bottom;
+//                PanelFootList.AutoSize = true;
+  //              PanelFootList.AutoSizeMode = AutoSizeMode.GrowAndShrink;
                 PanelFootList.Controls.Add(H1);
             }
 
@@ -62,16 +65,17 @@ namespace ArduinoController
                 listView2.Items.Insert(0, string.Format("LOG: {0}", text));
 
                 var id = int.Parse(text.Substring(text.IndexOf("a)") + 3, 3));
-                var value = int.Parse(text.Substring(text.IndexOf("c)") + 3));
+                var channel = int.Parse(text.Substring(text.IndexOf("b)") + 3, text.IndexOf("c)") - text.IndexOf("b)") - 3));
+                var value = int.Parse(text.Substring(text.IndexOf("c)") + 3, text.IndexOf("d)") - text.IndexOf("c)") - 3));
+                var value2 = int.Parse(text.Substring(text.IndexOf("d)") + 3, 3));
                 GetFootControl(id)?.SetSliderValue((double)value,false);
             };
         }
         FootSelectionList wpfControl = new FootSelectionList();
         List<FootControl> FootControls = new  List<FootControl>();
       
-        private void _arduinoController_CallOut(ArduinoController a, float b, float c, EventArgs e)
+        private void _arduinoController_CallOut(ArduinoController arduino, int a, int b, int c , double d, EventArgs e)
         {
-            _arduinoController.SetLedFrequency(1, b, c);
             listView2.Items.Insert(0, string.Format("AC control:{0} \n value:{1}", b, c));
             wpfControl.SetXY(b,c);
         }
@@ -131,6 +135,11 @@ namespace ArduinoController
         {
             _arduinoController.Exit();
             SetupArduino();
+        }
+
+        private void PanelFootList_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

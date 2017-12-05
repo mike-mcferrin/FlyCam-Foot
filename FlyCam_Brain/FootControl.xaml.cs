@@ -24,7 +24,7 @@ namespace _6_ArduinoController
             InitializeComponent();
         }
 
-        public delegate void CallOutHandler(FootControl footControl, int command, double value, EventArgs e);
+        public delegate void CallOutHandler(FootControl footControl, int id, int command, int sub, double value, EventArgs e);
         public event CallOutHandler CallOut;
 
         private void Rectangle_MouseDown(object sender, MouseButtonEventArgs e)
@@ -53,7 +53,7 @@ namespace _6_ArduinoController
                 SliderValue.Height = newValue;
                 Counter = (int) newValue;
                 if (log )
-                    CallOut(this, 12, newValue, new EventArgs());
+                    CallOut(this, 12, 0, (int) newValue, newValue, new EventArgs());
             }
             catch (Exception e)
             {
@@ -98,5 +98,14 @@ namespace _6_ArduinoController
 
         public int ID { get; set; }
 
+        private void ButtonSendCommand_Click(object sender, RoutedEventArgs e)
+        {
+            int d1 = Int32.Parse(TextBoxSend1.Text);
+            int d2 = Int32.Parse(TextBoxSend2.Text);
+            int d3 = Int32.Parse(TextBoxSend3.Text);
+            long d4 = Int64.Parse(TextBoxSend4.Text);
+            CallOut(this, d1, d2, d3, d4, new EventArgs());
+
+        }
     }
 }
