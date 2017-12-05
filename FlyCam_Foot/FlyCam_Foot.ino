@@ -23,7 +23,7 @@
 #define CE_PIN   9
 #define CSN_PIN 10
 
-#define MY_ID 3
+#define MY_ID 1
 
 enum LOG_LEVELS
 {
@@ -143,12 +143,11 @@ void SettingsInit()
       settings.positionMaximum = 0; 
 }
 
-void SetID( byte id )
+void SetID( int id )
 {
     settings.id = id;
-    LOG(1,2,false, "ID: ", true );
-    display.print( id );
-    display.display();
+    LOG(1,1,2,false, "ID:" );
+    LOG(1,6,2,false, id);
 }
 
 
@@ -173,19 +172,8 @@ void pingHead()
   
   if ( PositionChanged( counter ) )
   {
-   // if ( counter % 5 == 0 )
-   // {
-    LOG(3,1,counter %2 == 0, "",true );
- //  LOG(3,1,false, "Count:",true);
-    if ( SETTING_LOG_LEVEL > LOG_LEVEL_OFF )
-    {
-      display.println(counter);
-      display.display();
-      delay(50);
-    }
-  // }
-    
-    if ( ++counter == 128 )
+    LOG(3,1,1,counter %2 == 0, counter);
+    if ( ++counter >= 255 )
       counter = 0;
   }
 }
@@ -248,8 +236,8 @@ void showData() {
 
          if ( SETTING_LOG_LEVEL >= LOG_LEVEL_ALL )
           {
-                LOG(5,2,false, command);        
-                LOG(7,2,false, parameter1);        
+                LOG(5,1,2,false, command);        
+                LOG(5,6,2,false, parameter1);        
             //    LOG(8,1,false, parameter2);        
           }
               
@@ -270,7 +258,7 @@ void showData() {
              case 103:
                   Serial.print("Set ID: ");
                   Serial.println( parameter1 );
-                   SetID( parameter1 );
+                   SetID( dataReceived[2] );
                   break;
 
              case 104:
