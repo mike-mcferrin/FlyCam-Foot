@@ -23,6 +23,27 @@
 #define CE_PIN   9
 #define CSN_PIN 10
 
+#define MY_ID 3
+
+enum LOG_LEVELS
+{
+  LOG_LEVEL_OFF = 1,
+  LOG_LEVEL_COMM_IN = 2,
+  LOG_LEVEL_COMM_ALL = 3,
+  LOG_LEVEL_DEBUG = 4,
+  LOG_LEVEL_ALL = 5
+} ;
+
+enum MODES
+{
+  MODE_PING = 1,
+  MODE_SETUP = 2,
+  MODE_RUN = 3,
+  MODE_MANUAL = 4
+} ;
+
+int SETTING_LOG_LEVEL = LOG_LEVEL_DEBUG;
+int SETTING_MODE = MODE_PING;
 
 const byte thisSlaveAddress[5] = {'R','x','A','A','A'};
 const byte thisSlaveAddress2[5] = {'R','x','A','A','B'};
@@ -60,7 +81,7 @@ char dataToSend[7] = "       ";
 /**** EEPROM*****/
 struct config_t
 {
-    int id;
+    byte id;
     long positionCurrent;
     long positionMinimum;
     long positionMaximum;
@@ -76,34 +97,35 @@ void setup() {
 
       SettingsInit();
 
-    SERVO_1.attach(5);
     Serial.begin(9600);
 
      Serial.println( settings.id );
      Serial.println( settings.positionCurrent );
      Serial.println( settings.positionMinimum );
      Serial.println( settings.positionMaximum );
+
+    SETTING_LOG_LEVEL = LOG_LEVEL_ALL;
     
-    display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  
-    display.clearDisplay();
-    delay(50);
-     display.display();
-    if ( settings.id <= 0 )
-    {
-      settings.id = 32;
-    }
     delay(250);
-    LOG(1,2,false, String("ID: "), true );
-    display.print( settings.id );
-    display.display();
-    delay(50);
-//    LOG(8,1,false,"    SkyKam RX v1.5");
+    display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  
+    delay(250);
+    display.clearDisplay();
+    delay(250);
+
+    SetID( MY_ID );
+    
+    delay(250);
+
+
+ //   LOG(8,1,false,"    SkyKam RX v1.5");
     Serial.println("SimpleRx Starting");
     radio.begin();
     radio.setDataRate( RF24_250KBPS );
     radio.openReadingPipe(1, thisSlaveAddress);
     radio.openWritingPipe(thisSlaveAddress2);
     radio.startListening();
+
+    SERVO_1.attach(5);
 
   EncoderInit();
   motorControl = MotorControl();
@@ -115,28 +137,30 @@ void setup() {
 
 void SettingsInit()
 {
-  
-   WriteSettings(3,1200,100,9999999);
-      settings.id = 3;
+      settings.id = MY_ID;
       settings.positionCurrent = 0;
       settings.positionMinimum = 0;
-      settings.positionMaximum = 0;
-  
-   // ReadSettings();
-    
+      settings.positionMaximum = 0; 
+}
 
+void SetID( byte id )
+{
+    settings.id = id;
+    LOG(1,2,false, "ID: ", true );
+    display.print( id );
+    display.display();
 }
 
 
-
-
 //=============
-bool PingActive = true;
+
 
 void loop() {
     getData();
-    if ( PingActive )
+    if ( SETTING_MODE == MODE_PING )
+    {
       pingHead();
+    }
     showData();
 }
 
@@ -153,9 +177,12 @@ void pingHead()
    // {
     LOG(3,1,counter %2 == 0, "",true );
  //  LOG(3,1,false, "Count:",true);
-    display.println(counter);
-    display.display();
-    delay(50);
+    if ( SETTING_LOG_LEVEL > LOG_LEVEL_OFF )
+    {
+      display.println(counter);
+      display.display();
+      delay(50);
+    }
   // }
     
     if ( ++counter == 128 )
@@ -174,9 +201,9 @@ void getData() {
     }
 }
 
-long GetData(int address)
+unsigned long GetData(int address)
 {  int addressOffset = 4 * address; 
-  long anotherLongInt;
+  unsigned long anotherLongInt;
   anotherLongInt = ( ( dataReceived[addressOffset+0] << 24) 
                    + ( dataReceived[addressOffset+1] << 16) 
                    + ( dataReceived[addressOffset+2] << 8) 
@@ -193,7 +220,7 @@ void showData() {
        byte id = dataReceived[0] ;
        byte command = dataReceived[1] ;
        byte parameter1 = dataReceived[2] ;
-       long parameter2 = GetData(3);
+       unsigned long parameter2 = GetData(3);
 /* 
 
       LOG(6,1,false, id );
@@ -214,26 +241,42 @@ void showData() {
         Serial.print(" Parameter2: ");
         Serial.print( parameter2 );
         Serial.println();
-      
-      if ( String( id ) == String( settings.id ) )
+
+     
+      if ( id == settings.id || id == 0 )
       {
-        
-          
+
+         if ( SETTING_LOG_LEVEL >= LOG_LEVEL_ALL )
+          {
+                LOG(5,2,false, command);        
+                LOG(7,2,false, parameter1);        
+            //    LOG(8,1,false, parameter2);        
+          }
+              
           switch( command )
           {
-            case 100:
+            case 101:
+                  Serial.print("Set Mode: ");
+                  Serial.println( parameter1 );
+                  SETTING_MODE  = parameter1 ;
+                  break;
+        
+            case 102:
+                  Serial.print("Set Debug Level: ");
+                  Serial.println( parameter1 );
+                  SETTING_LOG_LEVEL = parameter1;
+                  break;
 
-              switch( parameter1 )
-              {
-                case 1:
-                    PingActive = true;
-                    break;
-                default:
-                    PingActive = false;
-                   break;                
-              }
+             case 103:
+                  Serial.print("Set ID: ");
+                  Serial.println( parameter1 );
+                   SetID( parameter1 );
+                  break;
 
-              break;
+             case 104:
+                  counter = parameter1;
+                  break;
+                  
             case 1:
     //              LOG(3,1,false,"STEP MOTOR"  );
             

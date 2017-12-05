@@ -450,11 +450,11 @@ void BrainInit()
 
   void OnReceivedDirectMessage()
   {
-      
-      dataToSend[0] = cmdMessenger.readInt16Arg();  
-      dataToSend[1] = cmdMessenger.readInt16Arg(); 
-      dataToSend[2] = cmdMessenger.readInt16Arg();   
-      SetData(3,  cmdMessenger.readDoubleArg());
+    
+    dataToSend[0] = cmdMessenger.readInt16Arg();  
+    dataToSend[1] = cmdMessenger.readInt16Arg(); 
+    dataToSend[2] = cmdMessenger.readInt16Arg();   
+    SetData(3,  cmdMessenger.readDoubleArg());
       
       send(); 
   }

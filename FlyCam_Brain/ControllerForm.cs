@@ -67,7 +67,7 @@ namespace ArduinoController
                 var id = int.Parse(text.Substring(text.IndexOf("a)") + 3, 3));
                 var channel = int.Parse(text.Substring(text.IndexOf("b)") + 3, text.IndexOf("c)") - text.IndexOf("b)") - 3));
                 var value = int.Parse(text.Substring(text.IndexOf("c)") + 3, text.IndexOf("d)") - text.IndexOf("c)") - 3));
-                var value2 = int.Parse(text.Substring(text.IndexOf("d)") + 3, 3));
+               var value2 = int.Parse(text.Substring(text.IndexOf("d)") + 3));
                 GetFootControl(id)?.SetSliderValue((double)value,false);
             };
         }

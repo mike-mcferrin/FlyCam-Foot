@@ -1,4 +1,5 @@
 
+int txIntervalMillis = 8000;
 void MotorControlInit()
 {
   motorControl.Init();
@@ -39,7 +40,6 @@ void wheelSpeed()
 
 unsigned long currentMillis;
 unsigned long prevMillis = 0;
-unsigned long txIntervalMillis = 5250; // send once per second
 
 
 bool PositionChanged( long newPosition )

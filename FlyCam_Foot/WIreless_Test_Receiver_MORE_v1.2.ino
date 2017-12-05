@@ -9,7 +9,9 @@ void LOG(int line, char* text)
   LOG(line,1,false,text);
 }
 void LOG(int line, int fontsize, bool invert, char* text)
-{
+{ 
+  if ( SETTING_LOG_LEVEL <= LOG_LEVEL_OFF )
+    return;
   LOG_setup(line,fontsize,invert);
   display.println(text);
   display.display();
@@ -17,6 +19,8 @@ void LOG(int line, int fontsize, bool invert, char* text)
 }
 void LOG(int line, int fontsize, bool invert, char text , bool IsCharArray)
 {
+  if ( SETTING_LOG_LEVEL <= LOG_LEVEL_OFF )
+    return;
   LOG_setup(line,fontsize,invert);
   display.println(text);
   display.display();
@@ -24,6 +28,8 @@ void LOG(int line, int fontsize, bool invert, char text , bool IsCharArray)
 }
 void LOG(int line, int fontsize, bool invert, String text)
 {
+  if ( SETTING_LOG_LEVEL <= LOG_LEVEL_OFF )
+    return;
   LOG_setup(line,fontsize,invert);
   if ( text != "" )
   {
@@ -34,12 +40,16 @@ void LOG(int line, int fontsize, bool invert, String text)
 }
 void LOG(int line, int fontsize, bool invert, String text, bool stayOnLine)
 {
+  if ( SETTING_LOG_LEVEL <= LOG_LEVEL_OFF )
+    return;
   LOG_setup(line,fontsize,invert);
     display.print(text);
     delay(20);
 }
 void LOG(int line, int fontsize, bool invert, unsigned long number)
 {
+  if ( SETTING_LOG_LEVEL <= LOG_LEVEL_OFF )
+    return;
   LOG_setup(line,fontsize,invert);
     display.println(number);
     display.display();
@@ -47,6 +57,8 @@ void LOG(int line, int fontsize, bool invert, unsigned long number)
 }
 void LOG(int line, int fontsize, bool invert, int number)
 {
+  if ( SETTING_LOG_LEVEL <= LOG_LEVEL_OFF )
+    return;
   LOG_setup(line,fontsize,invert);
     display.println(number);
     display.display();
@@ -54,16 +66,22 @@ void LOG(int line, int fontsize, bool invert, int number)
 }
 void LOG(byte text)
 {
+  if ( SETTING_LOG_LEVEL <= LOG_LEVEL_OFF )
+    return;
     display.print(text);
     delay(20);
 }
 void LOG()
 {
+  if ( SETTING_LOG_LEVEL <= LOG_LEVEL_OFF )
+    return;
     display.display();
     delay(20);
 }
 void LOG_setup(int line, int fontsize, bool invert)
 {
+  if ( SETTING_LOG_LEVEL <= LOG_LEVEL_OFF )
+    return;
  display.setTextSize(fontsize);
  delay(20);
  display.setCursor(xOffset, yOffset + ( line - 1 ) *  ( textHeight  ));
@@ -79,33 +97,5 @@ void LOG_setup(int line, int fontsize, bool invert)
 }
 
 
-/**** EEPROM*****/
-
-void ReadSettings()
-{
-  EEPROM_readAnything(0,settings);
-}
-
-void WriteSettings(int id, long position, long min, long max)
-{
-  settings.id = id;
-  settings.positionCurrent = position;
-  settings.positionMinimum = min;
-  settings.positionMaximum = max;
-  
-  EEPROM_writeAnything(0,settings);
-}
-
-/**** EEPROM*****/
 
 
-
-
-long LoadSetting(int setting)
-{
-   return EEPROM.read(setting);
-}
-void SaveSetting(int setting, long value)
-{
-   EEPROM.put(setting, value);
-}
