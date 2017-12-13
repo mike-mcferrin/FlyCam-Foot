@@ -1,5 +1,6 @@
 
 #include <SPI.h>
+#include "EEPromManager.h"
 #include <nRF24L01.h>
 #include <RF24.h>
 #include <Wire.h>
@@ -97,12 +98,17 @@ void setup() {
      Serial.println( settings.positionMinimum );
      Serial.println( settings.positionMaximum );
 
-    SETTING_LOG_LEVEL = LOG_LEVEL_ALL;
+    SETTING_LOG_LEVEL = LOG_LEVEL_OFF;
+
+//    display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  
+//    display.clearDisplay();
     
-    display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  
-    display.clearDisplay();
-   
-    SetID( MY_ID );
+    if ( configuration.MyId == 0 )
+    {  
+       configuration.MyId = 99;
+       EEPROMSave();
+    }
+    SetID( configuration.MyId );
     SetMODE( SETTING_MODE );    
     
    
@@ -132,6 +138,9 @@ void SettingsInit()
       settings.positionCurrent = 0;
       settings.positionMinimum = 0;
       settings.positionMaximum = 0; 
+
+    EEPROMLoad();
+
 }
 
 void SetID( int id )
@@ -139,6 +148,7 @@ void SetID( int id )
     settings.id = id;
     LOG(1,1,2,false, "ID:" );
     LOG(1,5,2,false, id);
+    configuration.MyId = id;
 }
 
 void SetMODE( int mode )
@@ -261,6 +271,7 @@ void showData() {
                   Serial.print("Set ID: ");
                   Serial.println( parameter1 );
                    SetID( dataReceived[2] );
+                   EEPROMSave();
                   break;
 
              case 104:
