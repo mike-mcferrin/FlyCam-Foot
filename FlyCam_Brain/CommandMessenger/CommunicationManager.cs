@@ -79,11 +79,17 @@ namespace CommandMessenger
             _transport = transport;
             _receiveCommandQueue = receiveCommandQueue;
             _transport.NewDataReceived += NewDataReceived;
+            _transport.HadAnException += TransportOnHadAnException;
             _commandSeparator = commandSeparator;
             _fieldSeparator = fieldSeparator;
             _escapeCharacter = escapeCharacter;
 
             _isEscaped = new IsEscaped();           
+        }
+
+        private void TransportOnHadAnException(object sender, EventArgs eventArgs)
+        {
+            throw new NotImplementedException();
         }
 
         #region Fields
@@ -260,6 +266,7 @@ namespace CommandMessenger
             {                
                 // Stop polling
                 _transport.NewDataReceived -= NewDataReceived;
+                _transport.HadAnException -= TransportOnHadAnException;
             }
             base.Dispose(disposing);
         }

@@ -31,16 +31,47 @@ namespace _6_ArduinoController
         {
         }
 
+        private int update_slider_position;
+
         private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            SetSliderValue(e.GetPosition(this).Y - 12);
+            var pos = e.GetPosition(this);
+            if (pos.X < SliderBox.Width + 10)
+            {
+                SetSliderValue(pos.Y - 12);
+            }
         }
 
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                SetSliderValue(e.GetPosition(this).Y - 12);
+                var pos = e.GetPosition(this);
+                if (pos.X < SliderBox.Width + 10)
+                {
+                    update_slider_position = (int) pos.Y - 12;
+                    SetSliderValue(pos.Y - 12);
+                }
+            }
+        }
+
+        private void Canvas_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (update_slider_position > 0)
+            {
+                //CallOut(this, this.ID, 101, 2, 0, new EventArgs());
+                //System.Threading.Thread.Sleep(500);
+                CallOut(this, this.ID, 104, update_slider_position, 0, new EventArgs());
+                System.Threading.Thread.Sleep(100);
+                CallOut(this, this.ID, 104, update_slider_position, 0, new EventArgs());
+                System.Threading.Thread.Sleep(100);
+                CallOut(this, this.ID, 104, update_slider_position, 0, new EventArgs());
+                System.Threading.Thread.Sleep(100);
+                CallOut(this, this.ID, 104, update_slider_position, 0, new EventArgs());
+                update_slider_position = 0;
+
+                //System.Threading.Thread.Sleep(500);
+                //CallOut(this, this.ID, 101, 1, 0, new EventArgs());
             }
         }
 
@@ -51,9 +82,9 @@ namespace _6_ArduinoController
                 newValue = newValue < 0 ? 0 : newValue;
                 newValue = newValue > SliderBox.Height - 6 ? SliderBox.Height - 6 : newValue;
                 SliderValue.Height = newValue;
-                Counter = (int) newValue;
-                if (log )
-                    CallOut(this, 12, 0, (int) newValue, newValue, new EventArgs());
+                Counter = (int)newValue;
+                if (log)
+                    CallOut(this, 12, 0, (int)newValue, newValue, new EventArgs());
             }
             catch (Exception e)
             {
@@ -70,7 +101,7 @@ namespace _6_ArduinoController
 
         public string Status
         {
-            get { return UIText_Status.Content.ToString();  }
+            get { return UIText_Status.Content.ToString(); }
             set
             {
                 UIText_Status.Content = value;
@@ -89,7 +120,7 @@ namespace _6_ArduinoController
 
         public int Counter
         {
-            get { return Int32.Parse( UIText_Status2.Content.ToString()); }
+            get { return Int32.Parse(UIText_Status2.Content.ToString()); }
             set
             {
                 UIText_Status2.Content = value.ToString();
@@ -100,12 +131,27 @@ namespace _6_ArduinoController
 
         private void ButtonSendCommand_Click(object sender, RoutedEventArgs e)
         {
-            int d1 = Int32.Parse(TextBoxSend1.Text);
-            int d2 = Int32.Parse(TextBoxSend2.Text);
-            int d3 = Int32.Parse(TextBoxSend3.Text);
-            long d4 = Int64.Parse(TextBoxSend4.Text);
-            CallOut(this, d1, d2, d3, d4, new EventArgs());
-
+            SendCommand(this.ID);
         }
+
+        private void ButtonSendCommand_To_All_Click(object sender, RoutedEventArgs e)
+        {
+            SendCommand(0);
+        }
+
+        private void SendCommand(int audience)
+        {
+            int d2 = Int32.Parse(TextBoxSend1.Text);
+            int d3 = Int32.Parse(TextBoxSend2.Text);
+            int d4 = Int32.Parse(TextBoxSend3.Text);
+            CallOut(this, audience, d2, d3, d4, new EventArgs());
+        }
+
+        private void TextBoxSend_GotFocus(object sender, RoutedEventArgs e)
+        {
+            ((TextBox)sender).SelectAll();
+        }
+
+    
     }
 }

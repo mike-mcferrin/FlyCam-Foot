@@ -2,3 +2,7 @@ C:\Users\smcferrin\Documents\Arduino\libraries\CmdMessenger\CSharp\CommandMessen
 C:\Users\smcferrin\Documents\Arduino\libraries\CmdMessenger\CSharp\CommandMessenger\bin\Debug\CommandMessenger.pdb
 C:\Users\smcferrin\Documents\Arduino\libraries\CmdMessenger\CSharp\CommandMessenger\obj\Debug\CommandMessenger.dll
 C:\Users\smcferrin\Documents\Arduino\libraries\CmdMessenger\CSharp\CommandMessenger\obj\Debug\CommandMessenger.pdb
+C:\Users\smcferrin\Documents\Arduino\my sketches\WIreless_Test_Receiver_REPOSITORY\FlyCam_Brain\CommandMessenger\obj\Debug\CommandMessenger.dll
+C:\Users\smcferrin\Documents\Arduino\my sketches\WIreless_Test_Receiver_REPOSITORY\FlyCam_Brain\CommandMessenger\obj\Debug\CommandMessenger.pdb
+C:\Users\smcferrin\Documents\Arduino\my sketches\WIreless_Test_Receiver_REPOSITORY\FlyCam_Brain\CommandMessenger\bin\Debug\CommandMessenger.dll
+C:\Users\smcferrin\Documents\Arduino\my sketches\WIreless_Test_Receiver_REPOSITORY\FlyCam_Brain\CommandMessenger\bin\Debug\CommandMessenger.pdb

@@ -39,10 +39,10 @@ namespace ArduinoController
                 };
                 
                 ElementHost H1 = new ElementHost();
-                H1.Width = 320;
+                H1.Width = 280;
                 H1.Height = 300;
                 H1.Child = foot;
-                H1.Dock = foot.ID <= 10 ? DockStyle.Top : DockStyle.Bottom;
+                H1.Dock = foot.ID <= 10 ? DockStyle.Left : DockStyle.Right;
 //                PanelFootList.AutoSize = true;
   //              PanelFootList.AutoSizeMode = AutoSizeMode.GrowAndShrink;
                 PanelFootList.Controls.Add(H1);

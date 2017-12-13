@@ -23,6 +23,7 @@ using System.IO.Ports;
 using System.Reflection;
 using System.Linq;
 using System.Threading;
+using System.Windows.Media;
 
 namespace CommandMessenger.TransportLayer
 {
@@ -105,6 +106,7 @@ namespace CommandMessenger.TransportLayer
         private SerialPort _serialPort;                                         // The serial port
         private SerialSettings _currentSerialSettings = new SerialSettings();   // The current serial settings
         public event EventHandler NewDataReceived;                              // Event queue for all listeners interested in NewLinesReceived events.
+        public event EventHandler HadAnException;                              // Event queue for all listeners interested in Error events.
 
         #endregion
 
@@ -132,21 +134,32 @@ namespace CommandMessenger.TransportLayer
         protected void ProcessQueue()
         {
             // Endless loop
-            while (ThreadRunState != ThreadRunStates.Abort)
+            try
             {
-                var bytes = BytesInBuffer();
-                _queueSpeed.SetCount(bytes);
-                _queueSpeed.CalcSleepTimeWithoutLoad();
-                _queueSpeed.Sleep();
-                if (ThreadRunState == ThreadRunStates.Start)
+                while (ThreadRunState != ThreadRunStates.Abort)
                 {
-                    if (bytes > 0)
+                    var bytes = BytesInBuffer();
+                    _queueSpeed.SetCount(bytes);
+                    _queueSpeed.CalcSleepTimeWithoutLoad();
+                    _queueSpeed.Sleep();
+                    if (ThreadRunState == ThreadRunStates.Start)
                     {
-                        if (NewDataReceived != null)
+                        if (bytes > 0)
                         {
-                            NewDataReceived(this, null);
+                            if (NewDataReceived != null)
+                            {
+                                NewDataReceived(this, null);
+                            }
                         }
                     }
+                }
+            }
+            catch (Exception e)
+            {
+                if (HadAnException != null)
+                {
+                    var g = new EventArgs();
+                    HadAnException(this, g);
                 }
             }
             _queueSpeed.Sleep(50);

@@ -1,18 +1,7 @@
-/*
- * 
- * This recieves radio signal and displays the text on the oled screen
- * 
- * 
- */
-
-
-
-// SimpleRx - the slave or the receiver
 
 #include <SPI.h>
 #include <nRF24L01.h>
 #include <RF24.h>
-#include <EEPROM.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
@@ -20,10 +9,14 @@
 #include <Servo.h>
 
 
+#define MY_ID 3
+
+
+
+
 #define CE_PIN   9
 #define CSN_PIN 10
 
-#define MY_ID 1
 
 enum LOG_LEVELS
 {
@@ -68,7 +61,7 @@ bool newData = false;
 const byte encoder0pinA = 2;  //A pin -> the interrupt pin 0
 const byte encoder0pinB = 4;  //B pin -> the digital pin 4    
 byte encoder0PinALast;
-long myPosition = 0;
+unsigned long myPosition = 0;
 boolean Direction; //the rotation direction 
 long settingTotalRuns = 0;
 MotorControl motorControl;
@@ -177,9 +170,10 @@ void pingHead()
 {
   
   if ( PositionChanged( counter ) )
-  {
+  { 
     LOG(2,18,1,false, "C:");
     LOG(2,21,1,counter %2 == 0, counter);
+    LOG(3,17,1,false, myPosition);
     if ( ++counter >= 255 )
       counter = 0;
   }
@@ -215,7 +209,8 @@ void showData() {
        byte id = dataReceived[0] ;
        byte command = dataReceived[1] ;
        byte parameter1 = dataReceived[2] ;
-       unsigned long parameter2 = GetData(3);
+       byte parameter2 = dataReceived[3] ;
+       //unsigned long parameter2 = GetData(3);
 /* 
 
       LOG(6,1,false, id );
@@ -244,8 +239,8 @@ void showData() {
          if ( SETTING_LOG_LEVEL >= LOG_LEVEL_ALL )
           {
                 LOG(5,1,2,false, command);        
-                LOG(5,6,2,false, parameter1);        
-            //    LOG(8,1,false, parameter2);        
+                LOG(5,7,2,false, parameter1);        
+                LOG(7,1,2,false, parameter2);        
           }
               
           switch( command )
@@ -272,7 +267,26 @@ void showData() {
                   counter = parameter1;
                   ResetCurrentMillis();
                   break;
-                  
+             
+             case 105:
+                  SERVO_1.write(parameter1);
+                  break;
+            case 106:
+                  movement =  Movement(parameter1,350,true); // 0-255 ,30 min
+                  movement.Start();
+                  break;
+            case 107:
+                  motorControl.DirectionForward(); 
+                  motorControl.SetSpeed( parameter1 );
+                  break;
+              case 108:
+                  motorControl.DirectionReverse(); 
+                  motorControl.SetSpeed( parameter1 );
+                  break;
+            case 109:
+                  motorControl.Stop();
+                  break;
+
             case 1:
     //              LOG(3,1,false,"STEP MOTOR"  );
             

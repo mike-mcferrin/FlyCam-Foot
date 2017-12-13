@@ -29,6 +29,7 @@ namespace CommandMessenger.TransportLayer
         bool StopListening();
         bool IsConnected();
         void Write(byte[] buffer);
-        event EventHandler NewDataReceived; 
+        event EventHandler NewDataReceived;
+        event EventHandler HadAnException;
     }
 }

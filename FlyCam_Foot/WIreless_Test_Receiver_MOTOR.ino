@@ -1,5 +1,5 @@
 
-int txIntervalMillis = 8000;
+int txIntervalMillis = 25000;
 void MotorControlInit()
 {
   motorControl.Init();
@@ -47,13 +47,10 @@ void ResetCurrentMillis()
 }
 bool PositionChanged( long newPosition )
 {
-    if (currentMillis++ >= txIntervalMillis )
+  
+    if (currentMillis++ >= txIntervalMillis) 
     {
-      currentMillis = 0;   
-    }
-    if (currentMillis >= txIntervalMillis) 
-    {
-      
+        currentMillis = 0;   
       dataToSend[0] =  settings.id;
       dataToSend[1] = 9;
       dataToSend[2] = newPosition ;
@@ -97,6 +94,9 @@ bool PositionChanged( long newPosition )
       }
        delay(50);
        radio.startListening();
+
+
+    
        return true;
     }
     return false;
